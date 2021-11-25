@@ -52,10 +52,9 @@ router.get("/:fName/:lName/:date", async function (req, res, next) {
 /** DELETE /[id] - delete appt, return `{message: "appt deleted"}` */
 
 router.delete("/:id", async function (req, res, next) {
-  let appt;
   try {
     const id = req.params.id;
-    appt = await Appointment.deleteAppt(id);
+    const appt = await Appointment.deleteAppt(id);
     if (!appt) throw new NotFoundError(`No matching appt: ${id}`);
     return res.json({ message: "Appt deleted" });
   } catch (e) {

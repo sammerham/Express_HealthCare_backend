@@ -1,6 +1,8 @@
 "use strict";
 
 const db = require("../db");
+const { NotFoundError, BadRequestError } = require("../expressError");
+
 class Doctor {
   /** get all doctors.
    *
@@ -37,6 +39,66 @@ class Doctor {
       [first_name, last_name]
     );
     return results.rows;
+  }
+  /** post - add - single doctor.
+*
+* Returns {doctor: [{
+    "id": 1,
+    "first_name": "Oliver",
+    "last_name": "Twist"
+  }}
+**/
+
+  
+  static async checkDupes(fName,lName) {
+    const duplicateCheck = await db.query(
+      `SELECT
+      first_name,
+      last_name
+      FROM
+      doctors
+      WHERE
+      first_name = $1
+      AND
+      last_name = $2`,
+      [fName, lName],
+    );
+    console.log('check', duplicateCheck.rows)
+    if (duplicateCheck.rows[0]) {
+      throw new BadRequestError(`Duplicate username: ${username}`);
+    }
+  }
+  
+  
+  
+  static async addDoctor(fName, lName) {
+    const results = await db.query(
+      `INSERT 
+      INTO
+      doctors
+      (first_name,last_name)
+      VALUES
+      ($1, $2)
+      RETURNING
+      id,
+      first_name,
+      last_name
+      `,
+      [fName, lName]
+    );
+    return results.rows;
+  }
+  /** delete doctor, return id */
+  static async deleteDoctor(id) {
+    const results = await db.query(
+      `DELETE
+       FROM
+       doctors
+       WHERE
+       id = $1
+       RETURNING id`,
+      [id]);
+    return results.rows[0];
   }
 }
 //insert into doctors (first_name, last_name) values ('Lily', 'Merham');
