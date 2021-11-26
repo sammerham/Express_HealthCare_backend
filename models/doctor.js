@@ -1,7 +1,7 @@
 "use strict";
 
 const db = require("../db");
-const { NotFoundError, BadRequestError } = require("../expressError");
+const { BadRequestError } = require("../expressError");
 
 class Doctor {
   /** get all doctors.
@@ -40,15 +40,11 @@ class Doctor {
     );
     return results.rows;
   }
-  /** post - add - single doctor.
-*
-* Returns {doctor: [{
-    "id": 1,
-    "first_name": "Oliver",
-    "last_name": "Twist"
-  }}
-**/
 
+  /**  checks if there is any duplicates.
+*
+* Returns BadRequest Error if any;
+**/
   
   static async checkDupes(fName,lName) {
     const duplicateCheck = await db.query(
@@ -63,13 +59,19 @@ class Doctor {
       last_name = $2`,
       [fName, lName],
     );
-    console.log('check', duplicateCheck.rows)
     if (duplicateCheck.rows[0]) {
       throw new BadRequestError(`Duplicate username: ${username}`);
     }
   }
   
-  
+  /**  add a single doctor.
+*
+* Returns {doctor: [{
+  "id": 1,
+  "first_name": "Oliver",
+  "last_name": "Twist"
+}}
+**/
   
   static async addDoctor(fName, lName) {
     const results = await db.query(
@@ -87,8 +89,10 @@ class Doctor {
       [fName, lName]
     );
     return results.rows;
-  }
+  };
+
   /** delete doctor, return id */
+
   static async deleteDoctor(id) {
     const results = await db.query(
       `DELETE
@@ -99,8 +103,10 @@ class Doctor {
        RETURNING id`,
       [id]);
     return results.rows[0];
-  }
+  };
+
   /** edit doctor, return {doctor: doctor} */
+  
   static async updateDoctor(fName, lName, id) {
     const results = await db.query(
       `UPDATE
@@ -116,9 +122,8 @@ class Doctor {
          last_name`,
       [fName, lName, id]);
     return results.rows[0];
-  }
-}
+  };
+};
 
-//update doctors set first_name = 'Celina', last_name='Merham' where id=12;
 
 module.exports = Doctor;

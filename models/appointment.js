@@ -216,7 +216,7 @@ class Appointment {
          appt_time`,
       [date, time, id]);
     return results.rows[0];
-  }
+  };
 }
 
 
