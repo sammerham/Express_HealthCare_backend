@@ -100,10 +100,25 @@ class Doctor {
       [id]);
     return results.rows[0];
   }
+  /** edit doctor, return {doctor: doctor} */
+  static async updateDoctor(fName, lName, id) {
+    const results = await db.query(
+      `UPDATE
+         doctors
+         SET
+         first_name = $1,
+         last_name=$2
+         WHERE
+         id = $3
+         RETURNING
+         id,
+         first_name,
+         last_name`,
+      [fName, lName, id]);
+    return results.rows[0];
+  }
 }
-//insert into doctors (first_name, last_name) values ('Lily', 'Merham');
-//select * from doctors where first_name = 'Lily' AND last_name='Merham';
-//delete from doctors where id=13;
+
 //update doctors set first_name = 'Celina', last_name='Merham' where id=12;
 
 module.exports = Doctor;

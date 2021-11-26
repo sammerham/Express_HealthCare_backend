@@ -79,6 +79,24 @@ router.delete("/:id", async function (req, res, next) {
   }
 });
 
+/** PATCH /[id] - update fields in doctor; return `{doctor: doctor}` */
+
+router.patch("/:id", async function (req, res, next) {
+  let doctor;
+  const { fName, lName } = req.body;
+  console.log('update ran')
+
+  const id = req.params.id;
+  console.log(fName, lName, id)
+  try {
+    doctor = await Doctor.updateDoctor(fName, lName, id);
+    console.log('doctor in update', doctor)
+    if (!doctor) throw new NotFoundError(`No matching doctor: ${id}`)
+    return res.json({ doctor });
+  } catch (e) {
+    return next(new NotFoundError(`No matching doctor: ${id}`));
+  };
+});
 
 module.exports = router;
 
