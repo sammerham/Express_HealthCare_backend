@@ -86,10 +86,7 @@ router.post("/", async function (req, res, next) {
 router.patch("/:id", async function (req, res, next) {
   let appt;
   const { date, time } = req.body;
-  console.log('update ran')
-
   const id = req.params.id;
-  console.log(date, time, id)
   try {
     appt = await Appointment.updateAppt(date, time, id);
     if (!appt) throw new NotFoundError(`No matching appt: ${id}`)

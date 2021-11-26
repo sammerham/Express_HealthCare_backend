@@ -16,7 +16,6 @@ const Doctor = require("../models/doctor");
 router.get('/', async (req, res, next) => {
   try {
     const doctors = await Doctor.showAll();
-    console.log('doctors', doctors);
     return res.json({ doctors });
   } catch (e) {
     return next(new NotFoundError('NOt Found'));
@@ -70,7 +69,6 @@ router.delete("/:id", async function (req, res, next) {
   let id;
   try {
     id = req.params.id;
-    console.log('id', id)
     const doctor = await Doctor.deleteDoctor(id);
     if (!doctor) throw new NotFoundError(`No matching appt: ${id}`);
     return res.json({ message: "doctor deleted" });
@@ -84,14 +82,10 @@ router.delete("/:id", async function (req, res, next) {
 router.patch("/:id", async function (req, res, next) {
   let doctor;
   const { fName, lName } = req.body;
-  console.log('update ran')
-
   const id = req.params.id;
-  console.log(fName, lName, id)
   try {
     doctor = await Doctor.updateDoctor(fName, lName, id);
-    console.log('doctor in update', doctor)
-    if (!doctor) throw new NotFoundError(`No matching doctor: ${id}`)
+    if (!doctor) throw new NotFoundError(`No matching doctor: ${id}`);
     return res.json({ doctor });
   } catch (e) {
     return next(new NotFoundError(`No matching doctor: ${id}`));
