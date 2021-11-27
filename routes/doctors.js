@@ -34,8 +34,7 @@ router.get('/', async (req, res, next) => {
 
 router.get("/:fName/:lName", async function (req, res, next) {
   try {
-    const fName = req.params.fName;
-    const lName = req.params.lName;
+    const { fName, lName } = req.body;
     const doctor = await Doctor.showDoctor(fName, lName);
     if (!doctor) throw new NotFoundError();
     return res.json({ doctor });
@@ -53,9 +52,7 @@ router.get("/:fName/:lName", async function (req, res, next) {
 
 router.post("/", async function (req, res, next) {
   try {
-    const fName = req.body.fName;
-    const lName = req.body.lName;
-    console.log('body', fName, lName);
+    const { fName, lName } = req.body;
     // if fName or lName fields is empty return bad request
     if (!fName|| !lName) return next(new BadRequestError('empty name'));
     // check for duplicates
