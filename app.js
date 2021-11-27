@@ -20,8 +20,14 @@ const dRoutes = require('./routes/doctors');
 const apptRoutes = require('./routes/appoinments');
 //!******************************
 
-//!*************Creating ROUTES*****************
+//!*************Middleware for CORS Access-Control-Allow-Origin header *****************
 
+app.use(function (req, res, next) {
+  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3001');
+  next();
+});
+
+//!*************Creating ROUTES*****************
 app.use('/doctors', dRoutes);
 app.use('/appts', apptRoutes);
 //!******************************

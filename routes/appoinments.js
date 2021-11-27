@@ -4,13 +4,14 @@ const router = express.Router();
 const db = require("../db");
 const { NotFoundError, BadRequestError } = require("../expressError");
 const Appointment = require("../models/appointment")
+
+
 // routes for appointments
 //Get a list of all appointments
-
+//! Good Route - Tested
 router.get('/', async (req, res, next) => {
   try {
-    const appointments = await Appointment.showAll();
-    return res.json({ appointments });
+    const appointments = await Appointment.showAll();    return res.json({ appointments });
   } catch (e) {
     return next(new NotFoundError('Not Found'));
   }
@@ -18,12 +19,12 @@ router.get('/', async (req, res, next) => {
 
 //Get a list of all appointments for a particular doctor
 /** GET /[fName]/[lName]- return data about one appt: `{appts: appts}` */
+//! Good Route - Tested
 
-router.get("/:fName/:lName", async function (req, res, next) {
+router.get("/doctorName/:fName/:lName", async function (req, res, next) {
 
   try {
-    const fName = req.params.fName;
-    const lName = req.params.lName;
+    const { fName, lName } = req.params;
     const appts = await Appointment.showDocAppts(fName, lName);
     if (!appts) throw new NotFoundError()
     return res.json({ appts });
@@ -34,13 +35,11 @@ router.get("/:fName/:lName", async function (req, res, next) {
 
 //Get a list of all appointments for a particular doctor and particular day
 /** GET /[fName]/[lName] /[date]- return data about one appt: `{appts: appts}` */
+//! Good Route - Tested
 
-router.get("/:fName/:lName/:date", async function (req, res, next) {
+router.get("/doctorName/:fName/:lName/:date", async function (req, res, next) {
   try {
-
-    const fName = req.params.fName;
-    const lName = req.params.lName;
-    const date = req.params.date;
+    const { fName, lName, date } = req.params;
     const appts = await Appointment.showDocApptsDate(fName, lName, date);
     if (!appts) throw new NotFoundError();
     return res.json({ appts });
@@ -48,12 +47,41 @@ router.get("/:fName/:lName/:date", async function (req, res, next) {
     return next(new NotFoundError());
   }
 });
+//Get a list of all appointments for a particular doctor by ID
+/** GET /[id] return data about one appt: `{appts: appts}` */
+//! Good Route - Tested
+
+router.get("/doctorId/:id", async function (req, res, next) {
+  try {
+    const { id } = req.params;
+    const appts = await Appointment.showDocApptsID(id);
+    if (!appts) throw new NotFoundError();
+    return res.json({ appts });
+  } catch (e) {
+    return next(new NotFoundError());
+  }
+});
+//Get a list of all appointments for a particular doctor by ID and Date
+/** GET /[id] return data about one appt: `{appts: appts}` */
+//! Good Route - Tested
+router.get("/doctorId/:id/:date", async function (req, res, next) {
+  try {
+    const { id, date } = req.params;
+    const appts = await Appointment.showDocApptsIdDate(id, date);
+    if (!appts) throw new NotFoundError();
+    return res.json({ appts });
+  } catch (e) {
+    return next(new NotFoundError());
+  }
+});
+
 
 /** DELETE /[id] - delete appt, return `{message: "appt deleted"}` */
+//! Good Route - Tested
 
-router.delete("/:id", async function (req, res, next) {
+router.delete("/apptId/:id", async function (req, res, next) {
   try {
-    const id = req.params.id;
+    const { id } = req.params;
     const appt = await Appointment.deleteAppt(id);
     if (!appt) throw new NotFoundError(`No matching appt: ${id}`);
     return res.json({ message: "Appt deleted" });
@@ -63,6 +91,7 @@ router.delete("/:id", async function (req, res, next) {
 });
 
 /** POST / - create appt from data; return `{appt: appt}` */
+//! Good Route - Tested
 
 router.post("/", async function (req, res, next) {
   try {
@@ -80,15 +109,18 @@ router.post("/", async function (req, res, next) {
     return next (new BadRequestError(`Doctors already has three appts for that time`));
   }
 });
+//! Good Route - Tested
 
 /** PATCH /[id] - update fields in appt; return `{appt: appt}` */
 
-router.patch("/:id", async function (req, res, next) {
+router.patch("/apptId/:id", async function (req, res, next) {
+  console.log('inside patch')
   let appt;
   const { date, time } = req.body;
-  const id = req.params.id;
+  const { id } = req.params;
   try {
     appt = await Appointment.updateAppt(date, time, id);
+    console.log('appt in pacth', appt)
     if (!appt) throw new NotFoundError(`No matching appt: ${id}`)
     return res.json({ appt });
   } catch (e) {

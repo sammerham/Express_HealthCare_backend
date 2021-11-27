@@ -1,6 +1,8 @@
 'use strict'
 const express = require("express");
 const router = express.Router();
+const app = require("../app");
+
 const db = require("../db");
 const { NotFoundError, BadRequestError } = require("../expressError");
 const Doctor = require("../models/doctor");
@@ -14,6 +16,7 @@ const Doctor = require("../models/doctor");
     }, ...]}` */
 
 router.get('/', async (req, res, next) => {
+  // res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3001');
   try {
     const doctors = await Doctor.showAll();
     return res.json({ doctors });
@@ -49,10 +52,10 @@ router.get("/:fName/:lName", async function (req, res, next) {
 
 
 router.post("/", async function (req, res, next) {
-  
   try {
     const fName = req.body.fName;
     const lName = req.body.lName;
+    console.log('body', fName, lName);
     // if fName or lName fields is empty return bad request
     if (!fName|| !lName) return next(new BadRequestError('empty name'));
     // check for duplicates

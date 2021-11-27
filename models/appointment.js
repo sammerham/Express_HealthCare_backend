@@ -27,7 +27,7 @@ class Appointment {
     return results.rows;
   }
 
-/** Get a list of all appointments for a particular doctor
+/** Get a list of all appointments for a particular doctor when provided firstName and lastName
  
  * Returns {
 "appointments": [
@@ -78,7 +78,8 @@ class Appointment {
       "appt_time": "12:45:00",
       "kind": "New Patient"
     }, ...]}
-   **/  static async showDocApptsDate(fName, lName, date) {
+   **/
+  static async showDocApptsDate(fName, lName, date) {
     const results = await db.query(
       `SELECT
        appointments.id,
@@ -103,7 +104,71 @@ class Appointment {
        `, [fName, lName, date]
     );
     return results.rows;
-   }
+  };
+  /** Get a list of all appointments for a particular doctor when ID is provided
+ 
+ * Returns {
+"appointments": [
+  {
+    "id": 5,
+    "patient_first_name": "Ceclia",
+    "patient_last_name": "Lolback",
+    "doctor_id": 2,
+    "appt_date": "2022-01-04T08:00:00.000Z",
+    "appt_time": "12:45:00",
+    "kind": "New Patient"
+  }, ...]}
+ **/
+  static async showDocApptsID(id) {
+    const results = await db.query(
+      `SELECT
+      id,
+       patient_first_name,
+       patient_last_name,
+       appt_date,
+       appt_time,
+       kind,
+       doctor_id
+       FROM appointments
+       WHERE
+       doctor_id = $1
+       `, [id]
+    );
+    return results.rows;
+  };
+  /** Get a list of all appointments for a particular doctor when ID is provided
+ 
+ * Returns {
+"appointments": [
+  {
+    "id": 5,
+    "patient_first_name": "Ceclia",
+    "patient_last_name": "Lolback",
+    "doctor_id": 2,
+    "appt_date": "2022-01-04T08:00:00.000Z",
+    "appt_time": "12:45:00",
+    "kind": "New Patient"
+  }, ...]}
+ **/
+  static async showDocApptsIdDate(id, date) {
+    const results = await db.query(
+      `SELECT
+       id,
+       patient_first_name,
+       patient_last_name,
+       appt_date,
+       appt_time,
+       kind,
+       doctor_id
+       FROM appointments
+       WHERE
+       doctor_id = $1
+       AND
+       appt_date=$2
+       `, [id, date]
+    );
+    return results.rows;
+  };
   
   /** delete appt, return id */
   static async deleteAppt(id) {
@@ -142,9 +207,8 @@ class Appointment {
         doctor_Last_Name
       ]
     );
-    const {id} =  doctor.rows[0];
+    const { id } = doctor.rows[0];
     if (!id) throw new NotFoundError(`No matching doctor`)
-    // return id;
     // check if doctor has more than 3 appts for the same time
     const doc_appts_same_time = await db.query(
       `SELECT *
@@ -157,7 +221,7 @@ class Appointment {
       [id,time]
     );
     const appt_count = doc_appts_same_time.rows.length;
-   
+
 
     // Insert into table if if doctor has less than 3 appts for the same time;
     // otherwise return error bad request;
