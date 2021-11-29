@@ -21,6 +21,7 @@ VALUES
 ('Greg', 'Hilton'),
 ('Tom', 'Landman');
 
+DROP TABLE IF EXISTS appointments;
 CREATE TABLE appointments 
 (
     id SERIAL PRIMARY KEY,

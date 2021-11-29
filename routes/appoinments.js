@@ -94,6 +94,7 @@ router.delete("/apptId/:id", async function (req, res, next) {
 //! Good Route - Tested
 
 router.post("/", async function (req, res, next) {
+  console.log(req.body)
   try {
     const appt = await Appointment.addAppt(
       req.body.doctor_First_Name,
@@ -104,6 +105,7 @@ router.post("/", async function (req, res, next) {
       req.body.time,
       req.body.kind
     );
+    
     return res.status(201).json({ appt });
   } catch (e) {
     return next (new BadRequestError(`Doctors already has three appts for that time`));
@@ -116,8 +118,10 @@ router.post("/", async function (req, res, next) {
 router.patch("/apptId/:id", async function (req, res, next) {
   console.log('inside patch')
   let appt;
+  console.log('body', req.body)
   const { date, time } = req.body;
   const { id } = req.params;
+  console.log('id -->', id, 'date--->>', date, 'Time___>>', time)
   try {
     appt = await Appointment.updateAppt(date, time, id);
     console.log('appt in pacth', appt)

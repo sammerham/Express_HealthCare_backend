@@ -1,7 +1,8 @@
-/** Simple Hello Word Express app. */
 
 const express = require("express");
+const cors = require("cors");
 const app = express();
+app.use(cors());
 
 // useful error class to throw
 const { NotFoundError } = require("./expressError");
@@ -22,11 +23,23 @@ const apptRoutes = require('./routes/appoinments');
 
 //!*************Middleware for CORS Access-Control-Allow-Origin header *****************
 
+// app.use(function (req, res, next) {
+//   // res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3001')
+//   res.setHeader('Access-Control-Allow-Origin', "*")
+//   res.setHeader("Access-Control-Allow-Methods", "*");
+//   next();
+// });
 app.use(function (req, res, next) {
-  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3001');
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
   next();
 });
-
+// app.use(function (req, res, next) {
+//   res.header("Access-Control-Allow-Origin", "*");
+//   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+//   next();
+// });
 //!*************Creating ROUTES*****************
 app.use('/doctors', dRoutes);
 app.use('/appts', apptRoutes);
