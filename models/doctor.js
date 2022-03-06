@@ -22,7 +22,7 @@ class Doctor {
       `);
       return results.rows;
   }
-  /** get single doctor.
+  /** get single doctor by fName and lName.
  *
  * Returns {doctor: [{
       "id": 1,
@@ -46,7 +46,7 @@ class Doctor {
     );
     return results.rows[0];
   }
-   /** get single doctor.
+   /** get single doctor by ID.
  *
  * Returns {doctor: [{
       "id": 1,
@@ -70,8 +70,6 @@ class Doctor {
   }
 
   /**  checks if there is any duplicates.
-*
-* Returns BadRequest Error if any;
 **/
   
   static async checkDupes(fName,lName) {
