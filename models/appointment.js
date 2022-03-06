@@ -7,6 +7,7 @@ const {
 } = require("../expressError");
 
 class Appointment {
+ 
   /** get all appointments.
    *
    * Returns {
@@ -23,7 +24,18 @@ class Appointment {
    **/
 
   static async showAll() {
-    const results = await db.query(`SELECT * FROM appointments`);
+    const results = await db.query(`
+    SELECT
+    id,
+    patient_first_name,
+    patient_last_name,
+    doctor_id, 
+    appt_date,
+    appt_time,
+    kind 
+    FROM
+    appointments
+    `);
     return results.rows;
   }
 
@@ -123,16 +135,16 @@ class Appointment {
     const results = await db.query(
       `SELECT
       id,
-       patient_first_name,
-       patient_last_name,
-       appt_date,
-       appt_time,
-       kind,
-       doctor_id
-       FROM appointments
-       WHERE
-       doctor_id = $1
-       `, [id]
+      patient_first_name,
+      patient_last_name,
+      appt_date,
+      appt_time,
+      kind,
+      doctor_id
+      FROM appointments
+      WHERE
+      doctor_id = $1
+      `, [id]
     );
     return results.rows;
   };

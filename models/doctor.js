@@ -14,7 +14,12 @@ class Doctor {
    **/
  
   static async showAll() {
-      const results = await db.query(`SELECT * FROM doctors`);
+    const results = await db.query(`
+      SELECT
+      id, first_name, last_name
+      FROM
+      doctors
+      `);
       return results.rows;
   }
   /** get single doctor.
@@ -26,9 +31,10 @@ class Doctor {
     }}
  **/
 
-  static async showDoctor(first_name, last_name) {
+  static async showDoctorByName(first_name, last_name) {
     const results = await db.query(
-      `SELECT *
+      `SELECT 
+      id, first_name, last_name
       FROM
       doctors
       WHERE
@@ -38,7 +44,29 @@ class Doctor {
       `,
       [first_name, last_name]
     );
-    return results.rows;
+    return results.rows[0];
+  }
+   /** get single doctor.
+ *
+ * Returns {doctor: [{
+      "id": 1,
+      "first_name": "Oliver",
+      "last_name": "Twist"
+    }}
+ **/
+
+  static async showDoctorById(id) {
+    const results = await db.query(
+      `SELECT 
+      id, first_name, last_name
+      FROM
+      doctors
+      WHERE
+      id = $1
+      `,
+      [id]
+    );
+    return results.rows[0];
   }
 
   /**  checks if there is any duplicates.
@@ -47,7 +75,7 @@ class Doctor {
 **/
   
   static async checkDupes(fName,lName) {
-    const duplicateCheck = await db.query(
+    const results = await db.query(
       `SELECT
       first_name,
       last_name
@@ -59,10 +87,9 @@ class Doctor {
       last_name = $2`,
       [fName, lName],
     );
-    if (duplicateCheck.rows[0]) {
-      throw new BadRequestError(`Duplicate username: ${username}`);
-    }
+    return results.rows[0]
   }
+  
   
   /**  add a single doctor.
 *

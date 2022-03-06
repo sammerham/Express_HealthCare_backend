@@ -11,7 +11,8 @@ const Appointment = require("../models/appointment")
 //! Good Route - Tested
 router.get('/', async (req, res, next) => {
   try {
-    const appointments = await Appointment.showAll();    return res.json({ appointments });
+    const appointments = await Appointment.showAll();
+    return res.json({ appointments });
   } catch (e) {
     return next(new NotFoundError('Not Found'));
   }
@@ -22,8 +23,8 @@ router.get('/', async (req, res, next) => {
 //! Good Route - Tested
 
 router.get("/doctorName/:fName/:lName", async function (req, res, next) {
-
   try {
+  
     const { fName, lName } = req.params;
     const appts = await Appointment.showDocAppts(fName, lName);
     if (!appts) throw new NotFoundError()
