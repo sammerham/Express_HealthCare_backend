@@ -39,6 +39,39 @@ class Appointment {
     return results.rows;
   }
 
+
+   /** get single doctor by ID.
+   *
+   * Returns {
+  "appointment": 
+    {
+      "id": 5,
+      "patient_first_name": "Ceclia",
+      "patient_last_name": "Lolback",
+      "doctor_id": 2,
+      "appt_date": "2022-01-04T08:00:00.000Z",
+      "appt_time": "12:45:00",
+      "kind": "New Patient"
+    }
+   **/
+
+  static async getAppointment(id) {
+    const results = await db.query(`
+    SELECT
+    id,
+    patient_first_name,
+    patient_last_name,
+    doctor_id, 
+    appt_date,
+    appt_time,
+    kind 
+    FROM
+    appointments
+    WHERE id = $1
+    `, [id]);
+    return results.rows[0];
+  }
+
 /** Get a list of all appointments for a particular doctor when provided firstName and lastName
  
  * Returns {

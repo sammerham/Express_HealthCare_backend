@@ -6,6 +6,7 @@ const app = require("../app");
 const db = require("../db");
 const { NotFoundError, BadRequestError, ExpressError } = require("../expressError");
 const Doctor = require("../models/doctor");
+const Appointment = require("../models/appointment")
 
 
 // routes for doctors
@@ -24,16 +25,16 @@ router.get('/', async (req, res, next) => {
   }
 });
 
-/** GET /[fName]/[lName] - returns `{doctor: {
+/** GET /name - returns `{doctor: {
       "id": 1,
       "first_name": "Oliver",
       "last_name": "Twist"
     }}` */
 
 
-router.get("/:fName/:lName", async function (req, res, next) {
+router.get("/name", async function (req, res, next) {
   try {
-    const { fName, lName } = req.params;
+    const { fName, lName } = req.body;
     const doctor = await Doctor.showDoctorByName(fName, lName);
     if (!doctor) throw new ExpressError('No doctor with this name', 404);
     return res.json({ doctor });
@@ -42,6 +43,75 @@ router.get("/:fName/:lName", async function (req, res, next) {
   }
 });
 
+//Get a list of all appointments for a particular doctor
+/** GET /name/appts- return data about one appt: `{appts: appts}` */
+
+router.get("/name/appts", async function (req, res, next) {
+  try {
+    const { fName, lName } = req.body;
+    const appts = await Appointment.showDocAppts(fName, lName);
+    if (!appts) throw new NotFoundError()
+    return res.json({ appts });
+  } catch (e) {
+    return next(new NotFoundError());
+  }
+});
+//Get a list of all appointments for a particular doctor and particular day
+/** GET /name/appts/date- return data about one appt: `{appts: appts}` */
+
+router.get("/name/appts/date", async function (req, res, next) {
+  try {
+    const { fName, lName, date } = req.body;
+    const appts = await Appointment.showDocApptsDate(fName, lName, date);
+    if (!appts) throw new NotFoundError();
+    return res.json({ appts });
+  } catch (e) {
+    return next(new NotFoundError());
+  }
+});
+/** GET /id - returns `{doctor: {
+      "id": 1,
+      "first_name": "Oliver",
+      "last_name": "Twist"
+    }}` */
+router.get("/:id", async function (req, res, next) {
+  try {
+    const { id } = req.params;
+    const doctor = await Doctor.showDoctorById(id);
+    if (!doctor) throw new ExpressError('No doctor with this name', 404);
+    return res.json({ doctor });
+  } catch (e) {
+    return next(new ExpressError(`${req.params.id} doesn't exist`, 404));
+  }
+});
+//Get a list of all appointments for a particular doctor by ID
+/** GET /[id]/appts return data about one appt: `{appts: appts}` */
+
+router.get("/:id/appts", async function (req, res, next) {
+  try {
+    const { id } = req.params;
+    const appts = await Appointment.showDocApptsID(id);
+    if (!appts) throw new NotFoundError();
+    return res.json({ appts });
+  } catch (e) {
+    return next(e);
+  }
+});
+
+//Get a list of all appointments for a particular doctor by ID and Date
+/** GET /[id] return data about one appt: `{appts: appts}` */
+
+router.get("/:id/appts/date", async function (req, res, next) {
+  try {
+    const { id } = req.params;
+    const { date } = req.body;
+    const appts = await Appointment.showDocApptsIdDate(id, date);
+    if (!appts) throw new NotFoundError();
+    return res.json({ appts });
+  } catch (e) {
+    return next(new NotFoundError());
+  }
+});
 /** POST  - returns `{doctor: {
       "id": 1,
       "first_name": "Oliver",

@@ -18,7 +18,7 @@ app.use(express.urlencoded({ extended: true }));
 //!*************IMPORTING ROUTES*****************
 //importing doctors routes
 const dRoutes = require('./routes/doctors');
-const apptRoutes = require('./routes/appoinments');
+const apptRoutes = require('./routes/appointments');
 //!******************************
 
 //!*************Middleware for CORS Access-Control-Allow-Origin header *****************
