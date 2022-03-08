@@ -48,3 +48,14 @@ VALUES
 ('Mike', 'Harry', 3, '2021-11-29', '01:15 PM', 'Follow-up'),
 ('Toomy', 'Lee', 1, '2021-11-29', '08:30 AM', 'New Patient'),
 ('Ceclia', 'Lolback', 2, '2022-01-04', '12:45 PM', 'New Patient');
+
+DROP TABLE IF EXISTS users;
+CREATE TABLE users (
+  username VARCHAR(25) PRIMARY KEY,
+  password TEXT NOT NULL,
+  first_name TEXT NOT NULL,
+  last_name TEXT NOT NULL,
+  email TEXT NOT NULL
+    CHECK (position('@' IN email) > 1),
+  is_admin BOOLEAN NOT NULL DEFAULT FALSE
+);

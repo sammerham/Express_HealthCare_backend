@@ -1,10 +1,7 @@
 /** Database setup for doctors. */
 
 const { Client } = require("pg");
-
-const DB_URI = process.env.NODE_ENV === "test"
-  ? "postgresql:///doctorsdb_test"
-  : "postgresql:///doctorsdb";
+const { DB_URI } = require("./config.js")
 
 let db = new Client({
   connectionString: DB_URI
