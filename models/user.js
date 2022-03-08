@@ -6,7 +6,7 @@ const {
   NotFoundError,
   BadRequestError,
   UnauthorizedError, } = require("../expressError");
-const { sqlForPartialUpdate } = require("../helper");
+const { sqlForPartialUpdate } = require("../helper/sql");
 
 const { BCRYPT_WORK_FACTOR } = require("../config");
 
