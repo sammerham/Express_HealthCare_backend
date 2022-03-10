@@ -58,12 +58,12 @@ class User {
    **/
 
   static async register(
-    username,
-    password,
-    firstName,
-    lastName,
-    email,
-    isAdmin) { 
+    { username,
+      password,
+      firstName,
+      lastName,
+      email,
+      isAdmin }) { 
     // check if username already exists in DB, 
     const duplicateCheck = await db.query(
           `SELECT username
@@ -78,7 +78,6 @@ class User {
     
     // hash password
     const hashedPassword = await bcrypt.hash(password, BCRYPT_WORK_FACTOR);
-
     // insert in users table in db
        const result = await db.query(
           `INSERT INTO users

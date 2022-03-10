@@ -16,9 +16,10 @@ app.use(express.urlencoded({ extended: true }));
 
 
 //!*************IMPORTING ROUTES*****************
-//importing doctors routes
+//importing routes
 const dRoutes = require('./routes/doctors');
 const apptRoutes = require('./routes/appointments');
+const authRoutes = require('./routes/auth');
 //!******************************
 
 //!*************Middleware for CORS Access-Control-Allow-Origin header *****************
@@ -33,6 +34,7 @@ app.use(function (req, res, next) {
 //!*************Creating ROUTES*****************
 app.use('/doctors', dRoutes);
 app.use('/appts', apptRoutes);
+app.use('/auth', authRoutes);
 //!******************************
 
 
