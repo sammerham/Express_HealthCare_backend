@@ -2,7 +2,7 @@ const express = require("express");
 const app = require("../app");
 const router = express.Router();
 const db = require("../db");
-const { NotFoundError, BadRequestError } = require("../expressError");
+const { NotFoundError, BadRequestError } = require("../ExpressError/expressError");
 const Appointment = require("../models/appointment")
 
 

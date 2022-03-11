@@ -1,7 +1,7 @@
 "use strict";
 
 const db = require("../db");
-const { BadRequestError } = require("../expressError");
+const { BadRequestError } = require("../ExpressError/expressError");
 
 class Doctor {
   /** get all doctors.

@@ -9,7 +9,7 @@ const router = new express.Router();
 const { createToken } = require("../helper/token");
 const userAuthSchema = require("../schemas/userAuth.json");
 const userRegisterSchema = require("../schemas/userRegister.json");
-const { BadRequestError } = require("../expressError");
+const { BadRequestError } = require("../ExpressError/expressError");
 
 /** POST /auth/token:  { username, password } => { token }
  *
@@ -32,6 +32,7 @@ router.post("/login", async function (req, res, next) {
   } catch (e) { 
     return next(e);
   }
+
 });
 //new BadRequestError(`Duplicate username: ${req.body.username}`
 

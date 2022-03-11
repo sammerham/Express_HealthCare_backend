@@ -5,7 +5,7 @@ const db = require("../db");
 const {
   NotFoundError,
   BadRequestError,
-  UnauthorizedError, } = require("../expressError");
+  UnauthorizedError, } = require("../ExpressError/expressError");
 const { sqlForPartialUpdate } = require("../helper/sql");
 
 const { BCRYPT_WORK_FACTOR } = require("../config");

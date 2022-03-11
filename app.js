@@ -2,10 +2,11 @@
 const express = require("express");
 const cors = require("cors");
 const app = express();
+const { authenticateJWT } = require("./middleware/auth");
 app.use(cors());
 
 // useful error class to throw
-const { NotFoundError } = require("./expressError");
+const { NotFoundError } = require("./ExpressError/expressError");
 
 // process JSON body => req.body
 app.use(express.json());
@@ -13,8 +14,14 @@ app.use(express.json());
 // process traditional form data => req.body
 app.use(express.urlencoded({ extended: true }));
 
-
-
+//Middleware: Authenticate user.
+/**
+ * If a token was provided, verify it, and, if valid, store the token payload
+ * on res.locals (this will include the username and isAdmin field.)
+ *
+ * It's not an error if no token was provided or if the token is not valid.
+ */
+app.use(authenticateJWT);
 //!*************IMPORTING ROUTES*****************
 //importing routes
 const dRoutes = require('./routes/doctors');

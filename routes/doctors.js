@@ -2,9 +2,12 @@
 const express = require("express");
 const router = express.Router();
 const app = require("../app");
-
+const {ensureCorrectUserOrAdmin} = require('../middleware/auth')
 const db = require("../db");
-const { NotFoundError, BadRequestError, ExpressError } = require("../expressError");
+const {
+  NotFoundError,
+  BadRequestError,
+  ExpressError } = require("../ExpressError/expressError");
 const Doctor = require("../models/doctor");
 const Appointment = require("../models/appointment")
 
@@ -16,7 +19,7 @@ const Appointment = require("../models/appointment")
       "last_name": "Twist"
     }, ...]}` */
 
-router.get('/', async (req, res, next) => {
+router.get('/' , async (req, res, next) => {
   try {
     const doctors = await Doctor.showAll();
     return res.json({ doctors });
