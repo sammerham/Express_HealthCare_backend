@@ -64,22 +64,23 @@ class User {
       email,
       isAdmin }) { 
     // check if username already exists in DB, 
-    const duplicateCheck = await db.query(
-          `SELECT username
-           FROM users
-           WHERE username = $1`,
-        [username],
-    );
-      //if so throw badrequest error
-    if (duplicateCheck.rows[0]) {
-      throw new BadRequestError(`Duplicate username: ${username}`);
-    }
+    // const duplicateCheck = await db.query(
+    //       `SELECT username
+    //        FROM users
+    //        WHERE username = $1`,
+    //     [username],
+    // );
     
-    // hash password
-    const hashedPassword = await bcrypt.hash(password, BCRYPT_WORK_FACTOR);
-    // insert in users table in db
-       const result = await db.query(
-          `INSERT INTO users
+    //   //if so throw badrequest error
+    // if (duplicateCheck.rows[0]) {
+    //   throw new BadRequestError(`Duplicate username: ${username}`);
+    // }
+    try {
+      // hash password
+      const hashedPassword = await bcrypt.hash(password, BCRYPT_WORK_FACTOR);
+      // insert in users table in db
+      const result = await db.query(
+        `INSERT INTO users
            (username,
             password,
             first_name,
@@ -101,10 +102,15 @@ class User {
           email,
           isAdmin,
         ],
-       );
-    
-    const user = result.rows[0];
-    return user;
+      );
+      const user = result.rows[0];
+      return user;
+    } catch (e) { 
+      if (e.code = '23505') { // using code errors from pg to check for duplicate username since it has unique constrains
+        // can get same behavior by running another query as above
+        throw new BadRequestError(`Duplicate username: ${username}`)
+      }
+    }
   }
 
 
