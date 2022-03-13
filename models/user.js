@@ -107,8 +107,12 @@ class User {
       return user;
     } catch (e) { 
       if (e.code = '23505') { // using code errors from pg to check for duplicate username since it has unique constrains
-        // can get same behavior by running another query as above
-        throw new BadRequestError(`Duplicate username: ${username}`)
+        // better than running a query as above to check for duplication.
+        const detail = e.detail.split('Key');
+        const errDetails = detail[1].replace('=', ' : ')    
+                                    .replaceAll('(', '')
+                                    .replaceAll(')', '');
+        throw new BadRequestError(`Duplicate${errDetails}`)
       }
     }
   }

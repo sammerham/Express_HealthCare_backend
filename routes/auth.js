@@ -29,11 +29,9 @@ router.post("/login", async function (req, res, next) {
     const user = await User.authenticate(username, password);
     const token = createToken(user);
     return res.status(201).json({ token });
-
   } catch (e) { 
     return next(e);
   }
-
 });
 //new BadRequestError(`Duplicate username: ${req.body.username}`
 
