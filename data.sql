@@ -10,16 +10,18 @@ CREATE TABLE doctors
 (
     id SERIAL PRIMARY KEY,
     first_name VARCHAR(50) NOT NULL,
-    last_name VARCHAR(50) NOT NULL
+    last_name VARCHAR(50) NOT NULL,
+    email TEXT NOT NULL
+    CHECK (position('@' IN email) > 1) UNIQUE
 );
 
 INSERT INTO doctors
-(first_name, last_name)
+(first_name, last_name, email)
 VALUES
-('Oliver', 'Twist'),
-('Randy', 'Hillman'),
-('Greg', 'Hilton'),
-('Tom', 'Landman');
+('Oliver', 'Twist', 'oliver@sodlcshealth.com'),
+('Randy', 'Hillman','randy@sodlcshealth.com'),
+('Greg', 'Hilton', 'greg@sodlcshealth.com'),
+('Tom', 'Landman', 'tom@sodlcshealth.com');
 
 DROP TABLE IF EXISTS appointments;
 CREATE TABLE appointments 

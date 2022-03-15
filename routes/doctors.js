@@ -1,9 +1,9 @@
 'use strict'
 const express = require("express");
 const router = express.Router();
-const app = require("../app");
+const jsonschema = require("jsonschema");
+const doctorNewSchema = require("../schemas/doctorNew.json");
 const {ensureLoggedIn, ensureAdmin} = require('../middleware/auth')
-const db = require("../db");
 const {
   NotFoundError,
   BadRequestError,
@@ -22,7 +22,7 @@ const Appointment = require("../models/appointment")
 router.get('/' ,ensureLoggedIn,  async (req, res, next) => {
   try {
     const doctors = await Doctor.showAll();
-    return res.json({ doctors });
+    return res.status(200).json({ doctors });
   } catch (e) {
     return next(new NotFoundError('NOt Found'));
   }
@@ -40,7 +40,7 @@ router.get("/name",ensureLoggedIn, async function (req, res, next) {
     const { fName, lName } = req.body;
     const doctor = await Doctor.showDoctorByName(fName, lName);
     if (!doctor) throw new ExpressError('No doctor with this name', 404);
-    return res.json({ doctor });
+    return res.status(200).json({ doctor });
   } catch (e) {
     return next(new ExpressError(`${req.params.fName} ${req.params.lName} doesn't exist`, 404));
   }
@@ -54,7 +54,7 @@ router.get("/name/appts",ensureLoggedIn, async function (req, res, next) {
     const { fName, lName } = req.body;
     const appts = await Appointment.showDocAppts(fName, lName);
     if (!appts) throw new NotFoundError()
-    return res.json({ appts });
+    return res.status(200).json({ appts });
   } catch (e) {
     return next(new NotFoundError());
   }
@@ -67,7 +67,7 @@ router.get("/name/appts/date",ensureLoggedIn,  async function (req, res, next) {
     const { fName, lName, date } = req.body;
     const appts = await Appointment.showDocApptsDate(fName, lName, date);
     if (!appts) throw new NotFoundError();
-    return res.json({ appts });
+    return res.status(200).json({ appts });
   } catch (e) {
     return next(new NotFoundError());
   }
@@ -82,7 +82,7 @@ router.get("/:id",ensureLoggedIn, async function (req, res, next) {
     const { id } = req.params;
     const doctor = await Doctor.showDoctorById(id);
     if (!doctor) throw new ExpressError('No doctor with this name', 404);
-    return res.json({ doctor });
+    return res.status(200).json({ doctor });
   } catch (e) {
     return next(new ExpressError(`${req.params.id} doesn't exist`, 404));
   }
@@ -95,7 +95,7 @@ router.get("/:id/appts", ensureLoggedIn, async function (req, res, next) {
     const { id } = req.params;
     const appts = await Appointment.showDocApptsID(id);
     if (!appts) throw new NotFoundError();
-    return res.json({ appts });
+    return res.status(200).json({ appts });
   } catch (e) {
     return next(e);
   }
@@ -110,7 +110,7 @@ router.get("/:id/appts/date", ensureLoggedIn, async function (req, res, next) {
     const { date } = req.body;
     const appts = await Appointment.showDocApptsIdDate(id, date);
     if (!appts) throw new NotFoundError();
-    return res.json({ appts });
+    return res.status(200).json({ appts });
   } catch (e) {
     return next(new NotFoundError());
   }
@@ -122,18 +122,18 @@ router.get("/:id/appts/date", ensureLoggedIn, async function (req, res, next) {
     }}` */
 
 
-router.post("/",ensureAdmin, async function (req, res, next) {
+router.post("/",ensureLoggedIn, async function (req, res, next) {
   try {
-    const { fName, lName } = req.body;
-    // if fName or lName fields is empty return bad request
-    if (!fName|| !lName) return next(new BadRequestError(`First name and last name are required`, 400));
-    // check for duplicates
-    const dupes = await Doctor.checkDupes(fName, lName);
-    if(dupes) throw new ExpressError(`Doctor ${fName} ${lName} already exist`, 404)
-    const doctor = await Doctor.addDoctor(fName, lName);
-    return res.json({ doctor });
+    const { fName, lName, email } = req.body;
+    const validator = jsonschema.validate(req.body, doctorNewSchema);
+    if (!validator.valid) {
+      const errs = validator.errors.map(e => e.stack);
+      throw new BadRequestError(errs);
+    }
+    const doctor = await Doctor.addDoctor(fName, lName, email);
+    return res.status(201).json({ doctor });
   } catch (e) {
-    return next(new BadRequestError(`Doctor ${req.body.fName} ${req.body.lName} already exists`), 400);
+    return next(new BadRequestError(e), 400);
   }
 });
 /** DELETE /[id] - delete doctor, return `{message: "doctor deleted"}` */

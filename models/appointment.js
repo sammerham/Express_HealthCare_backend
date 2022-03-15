@@ -5,6 +5,7 @@ const {
   NotFoundError,
   BadRequestError,
 } = require("../ExpressError/expressError");
+const { sqlForPartialUpdate } = require("../helper/sql");
 
 class Appointment {
  
@@ -308,22 +309,29 @@ class Appointment {
     }
   }
   /** edit appt, return {appt: appt} */
-  static async updateAppt(date, time, id) {
-    const results = await db.query(
-      `UPDATE
+  static async updateAppt(id, data) {
+        const { setCols, values } = sqlForPartialUpdate(
+        data,
+        {
+          patientFirstName: "patient_first_name",
+          patientLastName: "patient_last_name",
+          date: "iappt_date",
+          time: "appt_time",
+          kind:"kind",
+          });
+    const idVarIdx = "$" + (values.length + 1);
+    const querySql = `UPDATE
          appointments
-         SET
-         appt_date = $1,
-         appt_time=$2
+         SET${setCols}
          WHERE
-         id = $3
+         id = ${idVarIdx}
          RETURNING
          id,
          patient_first_name,
          patient_last_name,
          appt_date,
-         appt_time`,
-      [date, time, id]);
+         appt_time`
+    const results = await db.query(querySql, [...values, id]);
     return results.rows[0];
   };
 }

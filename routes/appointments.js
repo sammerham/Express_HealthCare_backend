@@ -1,10 +1,9 @@
 const express = require("express");
-const app = require("../app");
 const router = express.Router();
-const db = require("../db");
 const { NotFoundError, BadRequestError } = require("../ExpressError/expressError");
 const Appointment = require("../models/appointment")
-const {ensureLoggedIn } = require('../middleware/auth')
+const { ensureLoggedIn } = require('../middleware/auth')
+
 
 // routes for appointments
 
@@ -12,7 +11,7 @@ const {ensureLoggedIn } = require('../middleware/auth')
 router.get('/', ensureLoggedIn, async (req, res, next) => {
   try {
     const appointments = await Appointment.showAll();
-    return res.json({ appointments });
+    return res.status(200).json({ appointments });
   } catch (e) {
     return next(new NotFoundError('Not Found'));
   }
@@ -24,7 +23,7 @@ router.get('/:id', ensureLoggedIn, async (req, res, next) => {
     const { id } = req.params;
     const appointment = await Appointment.getAppointment(id);
     if(!appointment) throw new ExpressError('No appt with this id', 404);
-    return res.json({ appointment });
+    return res.status(200).json({ appointment });
   } catch (e) {
     return next(new NotFoundError('Not Found'));
   }
@@ -33,7 +32,6 @@ router.get('/:id', ensureLoggedIn, async (req, res, next) => {
 /** POST / - create appt from data; return `{appt: appt}` */
 
 router.post("/", ensureLoggedIn, async function (req, res, next) {
-  console.log(req.body)
   try {
     const appt = await Appointment.addAppt(
       req.body.doctor_First_Name,
@@ -44,7 +42,6 @@ router.post("/", ensureLoggedIn, async function (req, res, next) {
       req.body.time,
       req.body.kind
     );
-    
     return res.status(201).json({ appt });
   } catch (e) {
     return next (new BadRequestError(`Doctors already has three appts for that time`));
@@ -59,9 +56,8 @@ router.delete("/:id", ensureLoggedIn, async function (req, res, next) {
   try {
     id = req.params;
     const appt = await Appointment.deleteAppt(id);
-    console.log('appts in delete', appt)
     if (!appt) throw new NotFoundError(`No matching appt with id ${req.params.id}`);
-    return res.json({ message: "Appt deleted" });
+    return res.status(200).json({ message: "Appt deleted" });
   } catch (e) {
     return next(new NotFoundError(`No matching appt with id ${req.params.id}`));
   }
@@ -70,17 +66,12 @@ router.delete("/:id", ensureLoggedIn, async function (req, res, next) {
 /** PATCH /[id] - update fields in appt; return `{appt: appt}` */
 
 router.patch("/:id",ensureLoggedIn, async function (req, res, next) {
-  console.log('inside patch')
   let appt;
-  console.log('body', req.body)
-  const { date, time } = req.body;
   const { id } = req.params;
-  console.log('id -->', id, 'date--->>', date, 'Time___>>', time)
   try {
-    appt = await Appointment.updateAppt(date, time, id);
-    console.log('appt in pacth', appt)
+    appt = await Appointment.updateAppt(id, req.body);
     if (!appt) throw new NotFoundError(`No matching appt: ${id}`)
-    return res.json({ appt });
+    return res.status(200).json({ appt });
   } catch (e) {
     return next (new NotFoundError(`No matching appt: ${id}`));
   };

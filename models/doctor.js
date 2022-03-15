@@ -98,22 +98,31 @@ class Doctor {
 }}
 **/
   
-  static async addDoctor(fName, lName) {
-    const results = await db.query(
-      `INSERT 
-      INTO
-      doctors
-      (first_name,last_name)
-      VALUES
-      ($1, $2)
-      RETURNING
-      id,
-      first_name,
-      last_name
-      `,
-      [fName, lName]
-    );
-    return results.rows;
+  static async addDoctor(fName, lName, email) {
+    try {
+      const results = await db.query(
+        `INSERT 
+        INTO
+        doctors
+        (first_name,last_name)
+        VALUES
+        ($1, $2, $3)
+        RETURNING
+        id,
+        first_name,
+        last_name
+        `,
+        [fName, lName, email]
+      );
+      return results.rows;
+    } catch (e) {
+      // check for dupes
+      if (e.code = '23505') { // using code errors from pg to check for duplicate  since it has unique constrains
+        // better than running a query as above to check for duplication.
+        throw new BadRequestError(`Duplicate email: ${email} already exists`);
+    }
+  }
+
   };
 
   /** delete doctor, return id */

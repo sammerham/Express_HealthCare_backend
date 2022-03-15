@@ -1,0 +1,46 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "http://example.com/example.json",
+  "type": "object",
+  "properties": {
+    "doctor_First_Name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 30
+    },
+    "doctor_Last_Name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 30
+    },
+     "patient_first_name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 30
+    },
+    "patient_last_name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 30
+    },
+    "date": {
+      "type": "string",
+      "format": "date"
+    },
+      "time": {
+      "type": "string",
+      "format": "time"
+    },
+    "kind": { "enum": ["New Patient", "Follow-up"] }
+  },
+  "additionalProperties": false,
+  "required": [
+    "doctor_First_Name,",
+    "doctor_Last_Name",
+    "patient_first_name",
+    "patient_last_name",
+    "date",
+    "time",
+    "kind"
+  ]
+}
