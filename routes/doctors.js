@@ -2,7 +2,7 @@
 const express = require("express");
 const router = express.Router();
 const app = require("../app");
-const {ensureCorrectUserOrAdmin} = require('../middleware/auth')
+const {ensureLoggedIn, ensureAdmin} = require('../middleware/auth')
 const db = require("../db");
 const {
   NotFoundError,
@@ -19,7 +19,7 @@ const Appointment = require("../models/appointment")
       "last_name": "Twist"
     }, ...]}` */
 
-router.get('/' , async (req, res, next) => {
+router.get('/' ,ensureLoggedIn,  async (req, res, next) => {
   try {
     const doctors = await Doctor.showAll();
     return res.json({ doctors });
@@ -35,7 +35,7 @@ router.get('/' , async (req, res, next) => {
     }}` */
 
 
-router.get("/name", async function (req, res, next) {
+router.get("/name",ensureLoggedIn, async function (req, res, next) {
   try {
     const { fName, lName } = req.body;
     const doctor = await Doctor.showDoctorByName(fName, lName);
@@ -49,7 +49,7 @@ router.get("/name", async function (req, res, next) {
 //Get a list of all appointments for a particular doctor
 /** GET /name/appts- return data about one appt: `{appts: appts}` */
 
-router.get("/name/appts", async function (req, res, next) {
+router.get("/name/appts",ensureLoggedIn, async function (req, res, next) {
   try {
     const { fName, lName } = req.body;
     const appts = await Appointment.showDocAppts(fName, lName);
@@ -62,7 +62,7 @@ router.get("/name/appts", async function (req, res, next) {
 //Get a list of all appointments for a particular doctor and particular day
 /** GET /name/appts/date- return data about one appt: `{appts: appts}` */
 
-router.get("/name/appts/date", async function (req, res, next) {
+router.get("/name/appts/date",ensureLoggedIn,  async function (req, res, next) {
   try {
     const { fName, lName, date } = req.body;
     const appts = await Appointment.showDocApptsDate(fName, lName, date);
@@ -77,7 +77,7 @@ router.get("/name/appts/date", async function (req, res, next) {
       "first_name": "Oliver",
       "last_name": "Twist"
     }}` */
-router.get("/:id", async function (req, res, next) {
+router.get("/:id",ensureLoggedIn, async function (req, res, next) {
   try {
     const { id } = req.params;
     const doctor = await Doctor.showDoctorById(id);
@@ -90,7 +90,7 @@ router.get("/:id", async function (req, res, next) {
 //Get a list of all appointments for a particular doctor by ID
 /** GET /[id]/appts return data about one appt: `{appts: appts}` */
 
-router.get("/:id/appts", async function (req, res, next) {
+router.get("/:id/appts", ensureLoggedIn, async function (req, res, next) {
   try {
     const { id } = req.params;
     const appts = await Appointment.showDocApptsID(id);
@@ -104,7 +104,7 @@ router.get("/:id/appts", async function (req, res, next) {
 //Get a list of all appointments for a particular doctor by ID and Date
 /** GET /[id] return data about one appt: `{appts: appts}` */
 
-router.get("/:id/appts/date", async function (req, res, next) {
+router.get("/:id/appts/date", ensureLoggedIn, async function (req, res, next) {
   try {
     const { id } = req.params;
     const { date } = req.body;
@@ -122,7 +122,7 @@ router.get("/:id/appts/date", async function (req, res, next) {
     }}` */
 
 
-router.post("/", async function (req, res, next) {
+router.post("/",ensureAdmin, async function (req, res, next) {
   try {
     const { fName, lName } = req.body;
     // if fName or lName fields is empty return bad request
@@ -138,7 +138,7 @@ router.post("/", async function (req, res, next) {
 });
 /** DELETE /[id] - delete doctor, return `{message: "doctor deleted"}` */
 
-router.delete("/:id", async function (req, res, next) {
+router.delete("/:id", ensureAdmin, async function (req, res, next) {
   let id;
   try {
     id = req.params.id;
@@ -153,7 +153,7 @@ router.delete("/:id", async function (req, res, next) {
 
 /** PATCH /[id] - update fields in doctor; return `{doctor: doctor}` */
 
-router.patch("/:id", async function (req, res, next) {
+router.patch("/:id", ensureAdmin, async function (req, res, next) {
   let doctor;
   const { fName, lName } = req.body;
   const id = req.params.id;

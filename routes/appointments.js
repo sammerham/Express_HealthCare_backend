@@ -4,12 +4,12 @@ const router = express.Router();
 const db = require("../db");
 const { NotFoundError, BadRequestError } = require("../ExpressError/expressError");
 const Appointment = require("../models/appointment")
-
+const {ensureLoggedIn } = require('../middleware/auth')
 
 // routes for appointments
 
 //Get a list of all appointments
-router.get('/', async (req, res, next) => {
+router.get('/', ensureLoggedIn, async (req, res, next) => {
   try {
     const appointments = await Appointment.showAll();
     return res.json({ appointments });
@@ -19,7 +19,7 @@ router.get('/', async (req, res, next) => {
 });
 
 //Get a an appointment by Id
-router.get('/:id', async (req, res, next) => {
+router.get('/:id', ensureLoggedIn, async (req, res, next) => {
   try {
     const { id } = req.params;
     const appointment = await Appointment.getAppointment(id);
@@ -32,7 +32,7 @@ router.get('/:id', async (req, res, next) => {
 
 /** POST / - create appt from data; return `{appt: appt}` */
 
-router.post("/", async function (req, res, next) {
+router.post("/", ensureLoggedIn, async function (req, res, next) {
   console.log(req.body)
   try {
     const appt = await Appointment.addAppt(
@@ -54,7 +54,7 @@ router.post("/", async function (req, res, next) {
 
 /** DELETE /[id] - delete appt, return `{message: "appt deleted"}` */
 
-router.delete("/:id", async function (req, res, next) {
+router.delete("/:id", ensureLoggedIn, async function (req, res, next) {
   let id;
   try {
     id = req.params;
@@ -69,7 +69,7 @@ router.delete("/:id", async function (req, res, next) {
 
 /** PATCH /[id] - update fields in appt; return `{appt: appt}` */
 
-router.patch("/:id", async function (req, res, next) {
+router.patch("/:id",ensureLoggedIn, async function (req, res, next) {
   console.log('inside patch')
   let appt;
   console.log('body', req.body)
