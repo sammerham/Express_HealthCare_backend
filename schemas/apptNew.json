@@ -35,7 +35,7 @@
   },
   "additionalProperties": false,
   "required": [
-    "doctor_First_Name,",
+    "doctor_First_Name",
     "doctor_Last_Name",
     "patient_first_name",
     "patient_last_name",

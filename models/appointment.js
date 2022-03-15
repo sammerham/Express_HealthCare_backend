@@ -215,7 +215,29 @@ class Appointment {
     );
     return results.rows;
   };
+     /**  checks if there is any duplicates.
+**/
   
+  static async getAppt(fName,lName) {
+    const results = await db.query(
+      `SELECT
+      id,
+      patient_first_name,
+      patient_last_name,
+      doctor_id,
+      appt_date,
+      appt_time,
+      kind
+      FROM
+      appointments
+      WHERE
+      patient_first_name = $1
+      AND
+      patient_last_name = $2`,
+      [fName, lName],
+    );
+    return results.rows[0]
+  }
   /** delete appt, return id */
   static async deleteAppt(id) {
     const results = await db.query(
@@ -228,6 +250,7 @@ class Appointment {
       [id]);
     return results.rows[0];
   }
+
   /** Add appt, return {appt: appt} */
   static async addAppt(  
     doctor_First_Name,   

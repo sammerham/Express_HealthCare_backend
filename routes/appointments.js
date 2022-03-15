@@ -1,7 +1,9 @@
 const express = require("express");
 const router = express.Router();
-const { NotFoundError, BadRequestError } = require("../ExpressError/expressError");
+const { NotFoundError, BadRequestError, ExpressError } = require("../ExpressError/expressError");
 const Appointment = require("../models/appointment")
+const jsonschema = require("jsonschema");
+const apptNewSchema = require("../schemas/apptNew.json");
 const { ensureLoggedIn } = require('../middleware/auth')
 
 
@@ -32,19 +34,41 @@ router.get('/:id', ensureLoggedIn, async (req, res, next) => {
 /** POST / - create appt from data; return `{appt: appt}` */
 
 router.post("/", ensureLoggedIn, async function (req, res, next) {
+
   try {
+    const validator = jsonschema.validate(req.body, apptNewSchema);
+    if (!validator.valid) {
+      const errs = validator.errors.map(e => e.stack);
+      throw new BadRequestError(errs);
+    }
+    const {
+      doctor_First_Name,
+      doctor_Last_Name,
+      patient_first_name,
+      patient_last_name,
+      date,
+      time,
+      kind
+    } = req.body;
+    // check for dupes appt for patient at same date / time
+    const dupes = await Appointment.getAppt(patient_first_name, patient_last_name);
+    console.log(dupes)
+    const dupeDate = dupes.appt_date.toISOString().split('T')[0];
+    const dupeTime = dupes.appt_time;
+    if (dupes && dupeDate && dupeTime) throw new BadRequestError(`Patient has an appt already on ${date} at ${time}!!`);
+    // else add appt
     const appt = await Appointment.addAppt(
-      req.body.doctor_First_Name,
-      req.body.doctor_Last_Name,
-      req.body.patient_first_name,
-      req.body.patient_last_name,
-      req.body.date,
-      req.body.time,
-      req.body.kind
+      doctor_First_Name,
+      doctor_Last_Name,
+      patient_first_name,
+      patient_last_name,
+      date,
+      time,
+      kind
     );
     return res.status(201).json({ appt });
   } catch (e) {
-    return next (new BadRequestError(`Doctors already has three appts for that time`));
+    return next (new BadRequestError(e));
   }
 });
 
