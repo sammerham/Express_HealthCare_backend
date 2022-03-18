@@ -44,7 +44,7 @@ router.get("/name",ensureLoggedIn, async function (req, res, next) {
     if (!doctor) throw new ExpressError('No doctor with this name', 404);
     return res.status(200).json({ doctor });
   } catch (e) {
-    return next(new ExpressError(`${req.params.fName} ${req.params.lName} doesn't exist`, 404));
+    return next(new ExpressError(`${req.body.fName} ${req.body.lName} doesn't exist`, 404));
   }
 });
 

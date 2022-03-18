@@ -73,8 +73,10 @@ INSERT INTO users
     )
 VALUES
 ('samehisaac',
-'$2b$12$K8Eof2LD1bv9YWZ22X64r.dCYEP2xL5NFBLG/p494.hMGMze.t7he',
+'$2b$12$4njsmPHX31ksBKi5iuMWiOcStpEcO/ztMBIe4NjLkAAQ9dKJbMGty',
 'Sam',
 'Merham',
 'sam@smerham.com',
 't')
+
+-- samehisaac
