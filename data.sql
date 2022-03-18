@@ -61,3 +61,20 @@ CREATE TABLE users (
     CHECK (position('@' IN email) > 1) UNIQUE,
   is_admin BOOLEAN NOT NULL DEFAULT FALSE
 );
+
+INSERT INTO users
+(
+   username,
+    password,
+    first_name,
+    last_name,
+    email,
+    is_admin
+    )
+VALUES
+('samehisaac',
+'$2b$12$K8Eof2LD1bv9YWZ22X64r.dCYEP2xL5NFBLG/p494.hMGMze.t7he',
+'Sam',
+'Merham',
+'sam@smerham.com',
+'t')

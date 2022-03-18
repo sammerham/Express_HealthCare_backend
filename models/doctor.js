@@ -8,15 +8,15 @@ class Doctor {
    *
    * Returns {doctors: [{
         "id": 1,
-        "first_name": "Oliver",
-        "last_name": "Twist"
+        "last_name": "Twist",
+        "email": "oliver@sodlcshealth.com"
       }, ...]}
    **/
  
   static async showAll() {
     const results = await db.query(`
       SELECT
-      id, first_name, last_name
+      id, first_name, last_name, email
       FROM
       doctors
       `);
@@ -27,14 +27,15 @@ class Doctor {
  * Returns {doctor: [{
       "id": 1,
       "first_name": "Oliver",
-      "last_name": "Twist"
+      "last_name": "Twist",
+      "email": "oliver@sodlcshealth.com"
     }}
  **/
 
   static async showDoctorByName(first_name, last_name) {
     const results = await db.query(
       `SELECT 
-      id, first_name, last_name
+      id, first_name, last_name, email
       FROM
       doctors
       WHERE
@@ -51,7 +52,8 @@ class Doctor {
  * Returns {doctor: [{
       "id": 1,
       "first_name": "Oliver",
-      "last_name": "Twist"
+      "last_name": "Twist",
+      "email": "oliver@sodlcshealth.com"
     }}
  **/
 
@@ -94,7 +96,8 @@ class Doctor {
 * Returns {doctor: [{
   "id": 1,
   "first_name": "Oliver",
-  "last_name": "Twist"
+  "last_name": "Twist",
+  "email": "oliver@sodlcshealth.com"
 }}
 **/
   
@@ -104,13 +107,14 @@ class Doctor {
         `INSERT 
         INTO
         doctors
-        (first_name,last_name)
+        (first_name,last_name, email)
         VALUES
         ($1, $2, $3)
         RETURNING
         id,
         first_name,
-        last_name
+        last_name,
+        email
         `,
         [fName, lName, email]
       );

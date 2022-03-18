@@ -29,9 +29,7 @@
       "maxLength": 60,
       "format": "email"
     },
-    "isAdmin": {
-      "type": "boolean"
-    }
+    "isAdmin":  { "enum": ["true", "false"] }
   },
   "additionalProperties": false,
   "required": [
@@ -39,6 +37,7 @@
     "firstName",
     "lastName",
     "password",
-    "email"
+    "email",
+    "isAdmin"
   ]
 }

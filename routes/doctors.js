@@ -16,7 +16,8 @@ const Appointment = require("../models/appointment")
 /** GET / - returns `{doctors: [{
       "id": 1,
       "first_name": "Oliver",
-      "last_name": "Twist"
+      "last_name": "Twist",
+      "email": "oliver@sodlcshealth.com"
     }, ...]}` */
 
 router.get('/' ,ensureLoggedIn,  async (req, res, next) => {
@@ -31,7 +32,8 @@ router.get('/' ,ensureLoggedIn,  async (req, res, next) => {
 /** GET /name - returns `{doctor: {
       "id": 1,
       "first_name": "Oliver",
-      "last_name": "Twist"
+      "last_name": "Twist",
+      "email": "oliver@sodlcshealth.com"
     }}` */
 
 
@@ -54,6 +56,7 @@ router.get("/name/appts",ensureLoggedIn, async function (req, res, next) {
     const { fName, lName } = req.body;
     const appts = await Appointment.showDocAppts(fName, lName);
     if (!appts) throw new NotFoundError()
+    if (appts.length === 0) return res.status(200).json({ appts:`No appts available for Dr. ${lName}` });
     return res.status(200).json({ appts });
   } catch (e) {
     return next(new NotFoundError());
@@ -67,6 +70,7 @@ router.get("/name/appts/date",ensureLoggedIn,  async function (req, res, next) {
     const { fName, lName, date } = req.body;
     const appts = await Appointment.showDocApptsDate(fName, lName, date);
     if (!appts) throw new NotFoundError();
+    if (appts.length === 0) return res.status(200).json({ appts:`No appts available for Dr. ${lName} on ${date}` });
     return res.status(200).json({ appts });
   } catch (e) {
     return next(new NotFoundError());
@@ -75,7 +79,8 @@ router.get("/name/appts/date",ensureLoggedIn,  async function (req, res, next) {
 /** GET /id - returns `{doctor: {
       "id": 1,
       "first_name": "Oliver",
-      "last_name": "Twist"
+      "last_name": "Twist",
+      "email": "oliver@sodlcshealth.com"
     }}` */
 router.get("/:id",ensureLoggedIn, async function (req, res, next) {
   try {
@@ -94,6 +99,7 @@ router.get("/:id/appts", ensureLoggedIn, async function (req, res, next) {
   try {
     const { id } = req.params;
     const appts = await Appointment.showDocApptsID(id);
+    if (appts.length === 0) return res.status(200).json({ appts:`No appts available for id :${id}` });
     if (!appts) throw new NotFoundError();
     return res.status(200).json({ appts });
   } catch (e) {
@@ -118,7 +124,8 @@ router.get("/:id/appts/date", ensureLoggedIn, async function (req, res, next) {
 /** POST  - returns `{doctor: {
       "id": 1,
       "first_name": "Oliver",
-      "last_name": "Twist"
+      "last_name": "Twist",
+      "email": "oliver@sodlcshealth.com"
     }}` */
 
 
@@ -138,14 +145,14 @@ router.post("/",ensureLoggedIn, async function (req, res, next) {
 });
 /** DELETE /[id] - delete doctor, return `{message: "doctor deleted"}` */
 
-router.delete("/:id", ensureAdmin, async function (req, res, next) {
+router.delete("/:id", ensureLoggedIn, async function (req, res, next) {
   let id;
   try {
     id = req.params.id;
     const doctor = await Doctor.showDoctorById(id);
     if (!doctor) throw new NotFoundError(`No matching doctor with ID: ${id}`,404);
     await Doctor.deleteDoctor(id);
-    return res.json({ message: "doctor deleted" });
+    return res.status(200).json({ message: "doctor deleted" });
   } catch (e) {
     return next(new NotFoundError(`No matching doctor with ID: ${id}`, 404));
   }
@@ -160,8 +167,8 @@ router.patch("/:id", ensureAdmin, async function (req, res, next) {
   try {
     const doctor = await Doctor.showDoctorById(id);
     if (!doctor) throw new NotFoundError(`No matching doctor with ID: ${id}`,404);
-    await Doctor.updateDoctor(fName, lName, id);
-    return res.json({ doctor });
+    const updatedDoctor = await Doctor.updateDoctor(fName, lName, id);
+    return res.status(200).json({ doctor:updatedDoctor });
   } catch (e) {
     return next(new NotFoundError(`No matching doctor with ID: ${id}`,404));
   };

@@ -3,12 +3,12 @@
   "$id": "http://example.com/example.json",
   "type": "object",
   "properties": {
-    "firstName": {
+    "fName": {
       "type": "string",
       "minLength": 1,
       "maxLength": 30
     },
-    "lastName": {
+    "lName": {
       "type": "string",
       "minLength": 1,
       "maxLength": 30
@@ -22,8 +22,8 @@
   },
   "additionalProperties": false,
   "required": [
-    "firstName",
-    "lastName",
+    "fName",
+    "lName",
     "email"
   ]
 }
