@@ -134,7 +134,7 @@ router.post("/",ensureLoggedIn, async function (req, res, next) {
     const { fName, lName, email } = req.body;
     const validator = jsonschema.validate(req.body, doctorNewSchema);
     if (!validator.valid) {
-      const errs = validator.errors.map(e => e.stack);
+      const errs = validator.errors.map(e => e.stack.replaceAll('"', ''));
       throw new BadRequestError(errs);
     }
     const doctor = await Doctor.addDoctor(fName, lName, email);

@@ -22,11 +22,10 @@ router.post("/login", async function (req, res, next) {
   try {
     const validator = jsonschema.validate(req.body, userAuthSchema);
     if (!validator.valid) {
-      const errs = validator.errors.map(e => e.stack);
+      const errs = validator.errors.map(e => e.stack.replaceAll('"', ''));
       throw new BadRequestError(errs);
     }
     const { username, password } = req.body;
-    console.log('req body', req.body)
     const user = await User.authenticate(username, password);
     const token = createToken(user);
     return res.status(201).json({ token });
@@ -49,7 +48,7 @@ router.post("/register", async function (req, res, next) {
   try { 
     const validator = jsonschema.validate(req.body, userRegisterSchema);
     if (!validator.valid) {
-      const errs = validator.errors.map(e => e.stack);
+      const errs = validator.errors.map(e => e.stack.replaceAll('"', ''));
       throw new BadRequestError(errs);
     }
     const newUser = await User.register({ ...req.body, isAdmin: false });
