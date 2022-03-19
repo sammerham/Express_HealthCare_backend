@@ -6,6 +6,8 @@ const {
   BadRequestError,
 } = require("../ExpressError/expressError");
 const { sqlForPartialUpdate } = require("../helper/sql");
+const Doctor = require("../models/doctor");
+
 
 class Appointment {
  
@@ -218,7 +220,7 @@ class Appointment {
      /**  checks if there is any duplicates.
 **/
   
-  static async getAppt(fName,lName) {
+  static async getAppts(fName,lName) {
     const results = await db.query(
       `SELECT
       id,
@@ -236,19 +238,18 @@ class Appointment {
       patient_last_name = $2`,
       [fName, lName],
     );
-    return results.rows[0]
+    return results.rows
   }
   /** delete appt, return id */
   static async deleteAppt(id) {
-    const results = await db.query(
+    await db.query(
       `DELETE
        FROM
        appointments
        WHERE
        id = $1
-       RETURNING id`,
+      `,
       [id]);
-    return results.rows[0];
   }
 
   /** Add appt, return {appt: appt} */
@@ -261,23 +262,11 @@ class Appointment {
     time,
     kind
   ) {
-    // get doctor id
-    const doctor = await db.query(
-      `SELECT *
-      FROM
-      doctors
-      WHERE
-      first_name = $1
-      AND
-      last_name=$2
-      `,
-      [
-        doctor_First_Name,
-        doctor_Last_Name
-      ]
-    );
-    const { id } = doctor.rows[0];
-    if (!id) throw new NotFoundError(`No matching doctor`)
+    const doctor = await Doctor.showDoctorByName(doctor_First_Name, doctor_Last_Name);
+
+    if(!doctor) throw new NotFoundError(`Dr. ${doctor_First_Name} ${doctor_Last_Name} doesn't exist!`)
+    const { id } = doctor;
+
     // check if doctor has more than 3 appts for the same time
     const doc_appts_same_time = await db.query(
       `SELECT *
@@ -328,7 +317,7 @@ class Appointment {
       
       return results.rows[0];
     } else {
-      return new BadRequestError(`Doctors already has three appts for that time`);
+      return new BadRequestError(`Doctor ${doctor_Last_Name} has three appts for that time`);
     }
   }
   /** edit appt, return {appt: appt} */
