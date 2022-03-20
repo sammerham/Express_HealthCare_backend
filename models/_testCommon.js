@@ -1,9 +1,10 @@
+"use strict";
 const bcrypt = require("bcrypt");
 const db = require("../db");
 const { BCRYPT_WORK_FACTOR } = require("../config");
 
 
-
+const docIds = [];
 async function commonBeforeAll() {
 
   // clearning doctors table
@@ -14,7 +15,7 @@ async function commonBeforeAll() {
   await db.query("DELETE FROM users");
 
   // seeding doctors tables
-  const resultsDoctors = await db.query(`
+  const resDoctors = await db.query(`
     INSERT INTO doctors ( first_name, last_name, email )
     VALUES  ('d1', 'test1', 'd1@test.com'),
             ('d2', 'test2', 'd2@test.com'),
@@ -23,7 +24,9 @@ async function commonBeforeAll() {
   
   
   // getting doc ids to be used in appts inserting query
-  const docIds = resultsDoctors.rows.map(d => d.id);
+ 
+  docIds.splice(0, 0 , ...resDoctors.rows.map(d => d.id));
+
 
 // seeding users table
   await db.query(`
