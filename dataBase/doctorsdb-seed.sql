@@ -1,3 +1,5 @@
+const bcrypt = require("bcrypt");
+
 INSERT INTO doctors
 (
     first_name, 
@@ -32,7 +34,7 @@ VALUES
 
 INSERT INTO users
 (
-   username,
+    username,
     password,
     first_name,
     last_name,
