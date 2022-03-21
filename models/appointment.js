@@ -42,79 +42,8 @@ class Appointment {
     return results.rows;
   }
 
-
-   /** get single doctor by ID.
+  /** get all appointments by patient fname / lName.
    *
-   * Returns {
-  "appointment": 
-    {
-      "id": 5,
-      "patient_first_name": "Ceclia",
-      "patient_last_name": "Lolback",
-      "doctor_id": 2,
-      "appt_date": "2022-01-04T08:00:00.000Z",
-      "appt_time": "12:45:00",
-      "kind": "New Patient"
-    }
-   **/
-
-  static async getAppointment(id) {
-    const results = await db.query(`
-    SELECT
-    id,
-    patient_first_name,
-    patient_last_name,
-    doctor_id, 
-    appt_date,
-    appt_time,
-    kind 
-    FROM
-    appointments
-    WHERE id = $1
-    `, [id]);
-    return results.rows[0];
-  }
-
-/** Get a list of all appointments for a particular doctor when provided firstName and lastName
- 
- * Returns {
-"appointments": [
-  {
-    "id": 5,
-    "patient_first_name": "Ceclia",
-    "patient_last_name": "Lolback",
-    "doctor_id": 2,
-    "appt_date": "2022-01-04T08:00:00.000Z",
-    "appt_time": "12:45:00",
-    "kind": "New Patient"
-  }, ...]}
- **/
-  static async showDocAppts(fName, lName) {
-    const results = await db.query(
-      `SELECT
-       appointments.id,
-       patient_first_name,
-       patient_last_name,
-       appt_date,
-       appt_time,
-       kind,
-       first_name as DoctorFName,
-       last_name as DoctorLName
-       FROM appointments
-       JOIN
-       doctors
-       ON
-       doctor_id = doctors.id
-       WHERE
-       first_name = $1
-       AND
-       last_name = $2
-       `, [fName, lName]
-    );
-    return results.rows;
-  };
-  /** Get a list of all appointments for a particular doctor and particular date
-  
    * Returns {
   "appointments": [
     {
@@ -127,100 +56,7 @@ class Appointment {
       "kind": "New Patient"
     }, ...]}
    **/
-  static async showDocApptsDate(fName, lName, date) {
-    const results = await db.query(
-      `SELECT
-       appointments.id,
-       patient_first_name,
-       patient_last_name,
-       appt_date,
-       appt_time,
-       kind,
-       first_name as DoctorFName,
-       last_name as DoctorLName
-       FROM appointments
-       JOIN
-       doctors
-       ON
-       doctor_id = doctors.id
-       WHERE
-       first_name = $1
-       AND
-       last_name = $2
-       AND
-       appt_date = $3
-       `, [fName, lName, date]
-    );
-    return results.rows;
-  };
-  /** Get a list of all appointments for a particular doctor when ID is provided
- 
- * Returns {
-"appointments": [
-  {
-    "id": 5,
-    "patient_first_name": "Ceclia",
-    "patient_last_name": "Lolback",
-    "doctor_id": 2,
-    "appt_date": "2022-01-04T08:00:00.000Z",
-    "appt_time": "12:45:00",
-    "kind": "New Patient"
-  }, ...]}
- **/
-  static async showDocApptsID(id) {
-    const results = await db.query(
-      `SELECT
-      id,
-      patient_first_name,
-      patient_last_name,
-      appt_date,
-      appt_time,
-      kind,
-      doctor_id
-      FROM appointments
-      WHERE
-      doctor_id = $1
-      `, [id]
-    );
-    return results.rows;
-  };
-  /** Get a list of all appointments for a particular doctor when ID is provided
- 
- * Returns {
-"appointments": [
-  {
-    "id": 5,
-    "patient_first_name": "Ceclia",
-    "patient_last_name": "Lolback",
-    "doctor_id": 2,
-    "appt_date": "2022-01-04T08:00:00.000Z",
-    "appt_time": "12:45:00",
-    "kind": "New Patient"
-  }, ...]}
- **/
-  static async showDocApptsIdDate(id, date) {
-    const results = await db.query(
-      `SELECT
-       id,
-       patient_first_name,
-       patient_last_name,
-       appt_date,
-       appt_time,
-       kind,
-       doctor_id
-       FROM appointments
-       WHERE
-       doctor_id = $1
-       AND
-       appt_date=$2
-       `, [id, date]
-    );
-    return results.rows;
-  };
-     /**  checks if there is any duplicates.
-**/
-  
-  static async getAppts(fName,lName) {
+  static async getApptsByName(fName,lName) {
     const results = await db.query(
       `SELECT
       id,
@@ -240,16 +76,37 @@ class Appointment {
     );
     return results.rows
   }
-  /** delete appt, return id */
-  static async deleteAppt(id) {
-    await db.query(
-      `DELETE
-       FROM
-       appointments
-       WHERE
-       id = $1
-      `,
-      [id]);
+
+    /** get appt by ID.
+   *
+   * Returns {
+  "appointment": 
+    {
+      "id": 5,
+      "patient_first_name": "Ceclia",
+      "patient_last_name": "Lolback",
+      "doctor_id": 2,
+      "appt_date": "2022-01-04T08:00:00.000Z",
+      "appt_time": "12:45:00",
+      "kind": "New Patient"
+    }
+   **/
+
+  static async getAppointmentById(id) {
+    const results = await db.query(`
+    SELECT
+    id,
+    patient_first_name,
+    patient_last_name,
+    doctor_id, 
+    appt_date,
+    appt_time,
+    kind 
+    FROM
+    appointments
+    WHERE id = $1
+    `, [id]);
+    return results.rows[0];
   }
 
   /** Add appt, return {appt: appt} */
@@ -327,7 +184,7 @@ class Appointment {
         {
           patientFirstName: "patient_first_name",
           patientLastName: "patient_last_name",
-          date: "iappt_date",
+          date: "appt_date",
           time: "appt_time",
           kind:"kind",
           });
@@ -346,6 +203,21 @@ class Appointment {
     const results = await db.query(querySql, [...values, id]);
     return results.rows[0];
   };
+
+
+
+  /** delete appt, return id */
+  static async deleteAppt(id) {
+    await db.query(
+      `DELETE
+       FROM
+       appointments
+       WHERE
+       id = $1
+      `,
+      [id]);
+  };
+
 }
 
 

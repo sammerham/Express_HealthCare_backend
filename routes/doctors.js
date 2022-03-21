@@ -54,7 +54,7 @@ router.get("/name",ensureLoggedIn, async function (req, res, next) {
 router.get("/name/appts",ensureLoggedIn, async function (req, res, next) {
   try {
     const { fName, lName } = req.body;
-    const appts = await Appointment.showDocAppts(fName, lName);
+    const appts = await Appointment.showDocApptsByName(fName, lName);
     if (!appts) throw new NotFoundError()
     if (appts.length === 0) return res.status(200).json({ appts:`No appts available for Dr. ${lName}` });
     return res.status(200).json({ appts });
@@ -68,7 +68,7 @@ router.get("/name/appts",ensureLoggedIn, async function (req, res, next) {
 router.get("/name/appts/date",ensureLoggedIn,  async function (req, res, next) {
   try {
     const { fName, lName, date } = req.body;
-    const appts = await Appointment.showDocApptsDate(fName, lName, date);
+    const appts = await Appointment.showDocApptsByDate(fName, lName, date);
     if (!appts) throw new NotFoundError();
     if (appts.length === 0) return res.status(200).json({ appts:`No appts booked for Dr. ${lName} on ${date}` });
     return res.status(200).json({ appts });
@@ -100,7 +100,7 @@ router.get("/:id/appts", ensureLoggedIn, async function (req, res, next) {
     const { id } = req.params;
     const doctor = await Doctor.showDoctorById(id);
     if (!doctor) throw new ExpressError(`No doctor with id: ${id}`, 404);
-    const appts = await Appointment.showDocApptsID(id); 
+    const appts = await Appointment.showDocApptsById(id); 
     if (appts.length === 0) return res.status(200).json({ appts:`No appts booked for doctos with id :${id}` });
     if (!appts) throw new NotFoundError();
     return res.status(200).json({ appts });
@@ -118,7 +118,7 @@ router.get("/:id/appts/date", ensureLoggedIn, async function (req, res, next) {
     const { date } = req.body;
     const doctor = await Doctor.showDoctorById(id);
     if (!doctor) throw new ExpressError(`No doctor with id: ${id}`, 404);
-    const appts = await Appointment.showDocApptsIdDate(id, date);
+    const appts = await Appointment.showDocApptsByIdDate(id, date);
     if (appts.length === 0) return res.status(200).json({ appts:`No appts booked for Dr. ${doctor.first_name} on ${date}` });
     if (!appts) throw new NotFoundError();
     return res.status(200).json({ appts });

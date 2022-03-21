@@ -23,7 +23,7 @@ router.get('/', ensureLoggedIn, async (req, res, next) => {
 router.get('/:id', ensureLoggedIn, async (req, res, next) => {
   try {
     const { id } = req.params;
-    const appointment = await Appointment.getAppointment(id);
+    const appointment = await Appointment.getAppointmentById(id);
     if(!appointment) throw new ExpressError(`No appt with id : ${id}`, 404);
     return res.status(200).json({ appointment });
   } catch (e) {
@@ -51,7 +51,7 @@ router.post("/", ensureLoggedIn, async function (req, res, next) {
       kind
     } = req.body;
     // check for dupes appt for patient at same date
-    const patientAppts = await Appointment.getAppts(patient_first_name, patient_last_name);
+    const patientAppts = await Appointment.getApptsByName(patient_first_name, patient_last_name);
     const dupes = patientAppts.some(
       appt => appt.appt_date.toISOString().split('T')[0] === date
     )
@@ -78,7 +78,7 @@ router.post("/", ensureLoggedIn, async function (req, res, next) {
 router.delete("/:id", ensureLoggedIn, async function (req, res, next) {
   try {
     const { id } = req.params;
-    const appt = await Appointment.getAppointment(id);
+    const appt = await Appointment.getAppointmentByID(id);
     console.log('appts in delete route', appt)
     if (!appt) throw new ExpressError(`No appt with id : ${id}`, 404);
     await Appointment.deleteAppt(id);

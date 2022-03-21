@@ -161,6 +161,155 @@ class Doctor {
       [fName, lName, id]);
     return results.rows[0];
   };
+
+
+
+//************************************** DOCTOR APPTS */
+   
+/** Get a list of all appointments for a particular doctor when provided firstName and lastName
+ 
+ * Returns {
+"appointments": [
+  {
+    "id": 5,
+    "patient_first_name": "Ceclia",
+    "patient_last_name": "Lolback",
+    "doctor_id": 2,
+    "appt_date": "2022-01-04T08:00:00.000Z",
+    "appt_time": "12:45:00",
+    "kind": "New Patient"
+  }, ...]}
+ **/
+  static async showDocApptsByName(fName, lName) {
+    const results = await db.query(
+      `SELECT
+       appointments.id,
+       patient_first_name,
+       patient_last_name,
+       appt_date,
+       appt_time,
+       kind,
+       first_name as DoctorFName,
+       last_name as DoctorLName
+       FROM appointments
+       JOIN
+       doctors
+       ON
+       doctor_id = doctors.id
+       WHERE
+       first_name = $1
+       AND
+       last_name = $2
+       `, [fName, lName]
+    );
+    return results.rows;
+  };
+  /** Get a list of all appointments for a particular doctor and particular date
+  
+   * Returns {
+  "appointments": [
+    {
+      "id": 5,
+      "patient_first_name": "Ceclia",
+      "patient_last_name": "Lolback",
+      "doctor_id": 2,
+      "appt_date": "2022-01-04T08:00:00.000Z",
+      "appt_time": "12:45:00",
+      "kind": "New Patient"
+    }, ...]}
+   **/
+  static async showDocApptsByDate(fName, lName, date) {
+    const results = await db.query(
+      `SELECT
+       appointments.id,
+       patient_first_name,
+       patient_last_name,
+       appt_date,
+       appt_time,
+       kind,
+       first_name as DoctorFName,
+       last_name as DoctorLName
+       FROM appointments
+       JOIN
+       doctors
+       ON
+       doctor_id = doctors.id
+       WHERE
+       first_name = $1
+       AND
+       last_name = $2
+       AND
+       appt_date = $3
+       `, [fName, lName, date]
+    );
+    return results.rows;
+  };
+  /** Get a list of all appointments for a particular doctor when ID is provided
+ 
+ * Returns {
+"appointments": [
+  {
+    "id": 5,
+    "patient_first_name": "Ceclia",
+    "patient_last_name": "Lolback",
+    "doctor_id": 2,
+    "appt_date": "2022-01-04T08:00:00.000Z",
+    "appt_time": "12:45:00",
+    "kind": "New Patient"
+  }, ...]}
+ **/
+  static async showDocApptsById(id) {
+    const results = await db.query(
+      `SELECT
+      id,
+      patient_first_name,
+      patient_last_name,
+      appt_date,
+      appt_time,
+      kind,
+      doctor_id
+      FROM appointments
+      WHERE
+      doctor_id = $1
+      `, [id]
+    );
+    return results.rows;
+  };
+  /** Get a list of all appointments for a particular doctor when ID is provided
+ 
+ * Returns {
+"appointments": [
+  {
+    "id": 5,
+    "patient_first_name": "Ceclia",
+    "patient_last_name": "Lolback",
+    "doctor_id": 2,
+    "appt_date": "2022-01-04T08:00:00.000Z",
+    "appt_time": "12:45:00",
+    "kind": "New Patient"
+  }, ...]}
+ **/
+  static async showDocApptsByIdDate(id, date) {
+    const results = await db.query(
+      `SELECT
+       id,
+       patient_first_name,
+       patient_last_name,
+       appt_date,
+       appt_time,
+       kind,
+       doctor_id
+       FROM appointments
+       WHERE
+       doctor_id = $1
+       AND
+       appt_date=$2
+       `, [id, date]
+    );
+    return results.rows;
+  };
+
+//************************************** DOCTOR APPTS */
 };
 
 
