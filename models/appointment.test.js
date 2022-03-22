@@ -28,7 +28,7 @@ afterAll(commonAfterAll);
 
 
 
-/************************************** showAll */
+/************************************** Data */
 const data = 
   [
       {
@@ -77,7 +77,7 @@ describe("GetApptByName", () => {
     expect(appts[0].kind).toEqual('New Patient');
   });
 
-  test("not found if no such appt", async function () {
+  test("not found if no such appt", async () => {
     try {
       await Appointment.getAppointmentById(55);
     } catch (err) {
@@ -95,7 +95,7 @@ describe("GetApptById", () => {
     expect(appt).toEqual(appts[0]);
   });
 
-  test("not found if no such appt", async function () {
+  test("not found if no such appt", async () => {
     try {
       await Appointment.getAppointmentById(55);
     } catch (err) {
@@ -175,7 +175,7 @@ describe("update", () => {
     expect(appt.appt_time).toEqual('09:00:00');
   });
 
-  test("bad request if no data", async function () {
+  test("bad request if no data", async () => {
     // expect.assertions(1);
     try {
       const appts = await Appointment.getApptsByName('ptest2', 'test2');
@@ -190,7 +190,7 @@ describe("update", () => {
 /************************************** remove */
 
 describe("remove", () => {
-  test("works", async function () {
+  test("works", async () => {
     const appts = await Appointment.getApptsByName('ptest2', 'test2');
     const id = appts[0].id;
     await Appointment.deleteAppt(id);
@@ -198,7 +198,7 @@ describe("remove", () => {
     expect(res.length).toEqual(0);
   });
 
-  test("not found if no such Appt", async function () {
+  test("not found if no such Appt", async () => {
     try {
       await Appointment.deleteAppt(99);
       // fail();

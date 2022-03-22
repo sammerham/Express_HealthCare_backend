@@ -45,7 +45,7 @@ class Doctor {
       `,
       [first_name, last_name]
     );
-    return results.rows[0];
+    return results.rows;
   }
    /** get single doctor by ID.
  *
@@ -60,7 +60,7 @@ class Doctor {
   static async showDoctorById(id) {
     const results = await db.query(
       `SELECT 
-      id, first_name, last_name
+      id, first_name, last_name, email
       FROM
       doctors
       WHERE
@@ -118,7 +118,7 @@ class Doctor {
         `,
         [fName, lName, email]
       );
-      return results.rows;
+      return results.rows[0];
     } catch (e) {
       // check for dupes
       if (e.code = '23505') { // using code errors from pg to check for duplicate  since it has unique constrains
@@ -145,20 +145,22 @@ class Doctor {
 
   /** edit doctor, return {doctor: doctor} */
   
-  static async updateDoctor(fName, lName, id) {
+  static async updateDoctor(fName, lName,email, id) {
     const results = await db.query(
       `UPDATE
          doctors
          SET
          first_name = $1,
-         last_name=$2
+         last_name=$2,
+         email = $3
          WHERE
-         id = $3
+         id = $4
          RETURNING
          id,
          first_name,
-         last_name`,
-      [fName, lName, id]);
+         last_name,
+         email`,
+      [fName, lName, email, id]);
     return results.rows[0];
   };
 
