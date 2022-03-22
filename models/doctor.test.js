@@ -211,19 +211,80 @@ describe("update a doctor", () => {
 
 /************************************** ShowDoctApptsByName */
 
-describe("ShowDoctApptsByName", () => {
+describe("Show Doct Appts By Name", () => {
   test("works", async () => {
     const appts = await Doctor.showDocApptsByName('d1', 'test1');
     expect(appts.length).toEqual(1);
     expect(appts[0].patient_first_name).toEqual('ptest1');
   });
+
+  test("not found if no such doctor", async () => {
+    try {
+      await Doctor.showDocApptsByName('d', 'test');
+    } catch (err) {
+      expect(err instanceof NotFoundError).toBeTruthy();
+    }
+  });
 });
 
 /************************************** ShowDoctApptsByDate */
-describe("ShowDoctApptsByDate", () => {
+describe("Show Doct Appts By Date", () => {
   test("works", async () => {
-    const appts = await Doctor.showDocApptsByName('d1', 'test1', '2022-03-04');
+    const appts = await Doctor.showDocApptsByDate('d1', 'test1', '2022-03-04');
     expect(appts.length).toEqual(1);
     expect(appts[0].patient_first_name).toEqual('ptest1');
+  });
+
+  test("not found if no such doctor", async () => {
+    try {
+      await Doctor.showDocApptsByDate('d', 'test', '2022-06-04');
+    } catch (err) {
+      expect(err instanceof NotFoundError).toBeTruthy();
+    }
+  });
+});
+
+/************************************** ShowDoctApptsById */
+describe("Show Doct Appts By ID", () => {
+  test("works", async () => {
+    const docs = await Doctor.showDoctorByName('d1', 'test1');
+    const id = docs[0].id;
+    const appts = await Doctor.showDocApptsById(id);
+    expect(appts.length).toEqual(1);
+    expect(appts[0].patient_first_name).toEqual('ptest1');
+    expect(appts[0].kind).toEqual('Follow-up');
+  });
+  
+  test("not found if no such doctor", async () => {
+      try {
+      await Doctor.showDocApptsByName(99);
+    } catch (err) {
+      expect(err instanceof NotFoundError).toBeTruthy();
+    }
+  });
+});
+
+/************************************** ShowDoctApptsByIdDate */
+describe("Show Doct Appts By ID and Date", () => {
+  test("works", async () => {
+    const docs = await Doctor.showDoctorByName('d1', 'test1');
+    const id = docs[0].id;
+    const date = '2022-03-04'
+    const appts = await Doctor.showDocApptsByIdDate(id, date);
+    expect(appts.length).toEqual(1);
+    expect(appts[0].patient_first_name).toEqual('ptest1');
+    expect(appts[0].kind).toEqual('Follow-up');
+  });
+
+  test("not found if no such appts for this id / date", async () => {
+    try {
+      const docs = await Doctor.showDoctorByName('d1', 'test1');
+      const id = docs[0].id;
+      const date = '2022-09-04'
+      await Doctor.showDocApptsByIdDate(id, date);
+      // fail();
+    } catch (err) {
+      expect(err instanceof NotFoundError).toBeTruthy();
+    }
   });
 });
