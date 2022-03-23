@@ -7,6 +7,7 @@ const Doctor = require("../models/doctor");
 const { createToken } = require("../helper/token");
 
 const testDocIds = [];
+const testApptsIds = [];
 
 async function commonBeforeAll() {
   // noinspection SqlWithoutWhere
@@ -37,7 +38,7 @@ async function commonBeforeAll() {
   testDocIds[2] = doc3.id;
 
 // adding appoitments
-  await Appointment.addAppt(
+  const appt1 = await Appointment.addAppt(
     'd1',
     'test1',
     'ptest1',
@@ -46,7 +47,7 @@ async function commonBeforeAll() {
     '10:00 AM',
     'Follow-up'
   );
-  await Appointment.addAppt(
+  const appt2 = await Appointment.addAppt(
     'd2',
     'test2',
     'ptest2',
@@ -55,7 +56,7 @@ async function commonBeforeAll() {
     '10:30 AM',
     'Follow-up'  
   );
-  await Appointment.addAppt(
+  const appt3 = await Appointment.addAppt(
     'd3',
     'test3',
     'ptest3',
@@ -64,6 +65,11 @@ async function commonBeforeAll() {
     '10:15 AM',
     'Follow-up'
   );
+
+  testApptsIds[0] = appt1.id;
+  testApptsIds[1] = appt2.id;
+  testApptsIds[2] = appt3.id;
+
  // adding users
   await User.register({
     username: "u1",
@@ -116,6 +122,7 @@ module.exports = {
   commonAfterEach,
   commonAfterAll,
   testDocIds,
+  testApptsIds,
   u1Token,
   u2Token,
   adminToken,

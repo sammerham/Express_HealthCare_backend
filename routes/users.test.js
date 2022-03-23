@@ -11,7 +11,6 @@ const {
   commonBeforeEach,
   commonAfterEach,
   commonAfterAll,
-  testDocIds,
   u1Token,
   u2Token,
   adminToken,
@@ -162,7 +161,7 @@ describe("GET /users", () => {
     expect(resp.statusCode).toEqual(401);
     });
   
-    test("unauth for anon", async () => {
+    test("unauth for a none user", async () => {
     const resp = await request(app)
         .get("/users");
     expect(resp.statusCode).toEqual(401);
