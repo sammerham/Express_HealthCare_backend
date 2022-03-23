@@ -38,7 +38,6 @@ describe("POST /auth/login", () => {
           username: "no-such-user",
           password: "password1",
         });
-    console.log('code --->>', resp.statusCode)
     expect(resp.statusCode).toEqual(401);
   });
 
