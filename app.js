@@ -27,7 +27,7 @@ app.use(authenticateJWT);
 const dRoutes = require('./routes/doctors');
 const apptRoutes = require('./routes/appointments');
 const authRoutes = require('./routes/auth');
-const userRoutes = require('./routes/user');
+const userRoutes = require('./routes/users');
 //!******************************
 
 //!*************Middleware for CORS Access-Control-Allow-Origin header *****************
@@ -43,7 +43,7 @@ app.use(function (req, res, next) {
 app.use('/doctors', dRoutes);
 app.use('/appts', apptRoutes);
 app.use('/auth', authRoutes);
-app.use('/user', userRoutes);
+app.use('/users', userRoutes);
 //!******************************
 
 
