@@ -66,7 +66,7 @@ describe("Show Doctor By Name", () => {
   };
   test("works", async () => {
     const doc = await Doctor.showDoctorByName('d1', 'test1');
-    expect(doc[0]).toEqual(docTest);
+    expect(doc).toEqual(docTest);
   });
 
   test("not found if no such doc", async () => {
@@ -83,9 +83,9 @@ describe("Show Doctor By Name", () => {
 describe("Show doctor By Id", () => {
   test("works", async () => {
     const doc = await Doctor.showDoctorByName('d1', 'test1');
-    const id = doc[0].id;
+    const id = doc.id;
     const docById = await Doctor.showDoctorById(id);
-    expect(docById).toEqual(doc[0]);
+    expect(docById).toEqual(doc);
   });
 
   test("not found if no such appt", async () => {
@@ -137,7 +137,7 @@ describe("Add Doctor", () => {
     expect(doc.email).toEqual('newDoctor@test.com');
     
     const doctor = await Doctor.showDoctorByName('newDoctor', 'NewLast');
-    expect(doctor[0].email).toEqual('newDoctor@test.com');
+    expect(doctor.email).toEqual('newDoctor@test.com');
   });
 
   test("bad request with dup data", async () =>  {
@@ -163,10 +163,10 @@ describe("Add Doctor", () => {
 describe(" delete a doctor", () => {
   test("works", async () => {
     const doc = await Doctor.showDoctorByName('d1', 'test1');
-    const id = doc[0].id;
+    const id = doc.id;
     await Doctor.deleteDoctor(id);
     const res = await Doctor.showDoctorByName('d1', 'test1');
-    expect(res.length).toEqual(0);
+    expect(res).toEqual(undefined);
   });
 
   test("not found if no such doctor", async () => {
@@ -190,7 +190,7 @@ describe("update a doctor", () => {
 
   test("works with all data", async () => {
     const docs = await Doctor.showDoctorByName('d1', 'test1');
-    const id = docs[0].id;
+    const id = docs.id;
     const updatedDoc = await Doctor.updateDoctor(...Object.values(updateData),id);
     expect(updatedDoc.first_name).toEqual('updatedDoctor');
     expect(updatedDoc.last_name).toEqual('updateLast');
@@ -200,7 +200,7 @@ describe("update a doctor", () => {
   test("bad request if no data", async () => {
     try {
       const docs = await Doctor.showDoctorByName('d1', 'test1');
-      const id = docs[0].id;
+      const id = docs.id;
       await Doctor.updateDoctor(id);
     } catch (err) {
       expect(err instanceof BadRequestError).toBeTruthy();
@@ -248,7 +248,7 @@ describe("Show Doct Appts By Date", () => {
 describe("Show Doct Appts By ID", () => {
   test("works", async () => {
     const docs = await Doctor.showDoctorByName('d1', 'test1');
-    const id = docs[0].id;
+    const id = docs.id;
     const appts = await Doctor.showDocApptsById(id);
     expect(appts.length).toEqual(1);
     expect(appts[0].patient_first_name).toEqual('ptest1');
@@ -268,7 +268,7 @@ describe("Show Doct Appts By ID", () => {
 describe("Show Doct Appts By ID and Date", () => {
   test("works", async () => {
     const docs = await Doctor.showDoctorByName('d1', 'test1');
-    const id = docs[0].id;
+    const id = docs.id;
     const date = '2022-03-04'
     const appts = await Doctor.showDocApptsByIdDate(id, date);
     expect(appts.length).toEqual(1);
@@ -279,7 +279,7 @@ describe("Show Doct Appts By ID and Date", () => {
   test("not found if no such appts for this id / date", async () => {
     try {
       const docs = await Doctor.showDoctorByName('d1', 'test1');
-      const id = docs[0].id;
+      const id = docs.id;
       const date = '2022-09-04'
       await Doctor.showDocApptsByIdDate(id, date);
       // fail();

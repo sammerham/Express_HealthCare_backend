@@ -208,19 +208,19 @@ test("bad request if missing data", async () => {
     expect(resp.statusCode).toEqual(400);
 });
   
-  test("bad request if invalid data", async () => {
-    const resp = await request(app)
-        .post("/appts")
-        .send({
-          doctor_First_Name: "d1",
-            doctor_Last_Name: "test1",
-            patient_first_name: "addtest",
-            patient_last_name: "test",
-            date: '2022-01-01',
-            time: '09:00:00',
-            kind: 11,
-        })
-        .set("authorization", `Bearer ${u1Token}`);
+test("bad request if invalid data", async () => {
+  const resp = await request(app)
+      .post("/appts")
+      .send({
+        doctor_First_Name: "d1",
+          doctor_Last_Name: "test1",
+          patient_first_name: "addtest",
+          patient_last_name: "test",
+          date: '2022-01-01',
+          time: '09:00:00',
+          kind: 11,
+      })
+      .set("authorization", `Bearer ${u1Token}`);
     expect(resp.statusCode).toEqual(400);
   });
 
@@ -264,7 +264,7 @@ describe("DELETE /appts/:id", () => {
     expect(resp.body).toEqual({ message: "Appt deleted" });
   });
 
-    test("works for logged in Admin", async () => {
+  test("works for logged in Admin", async () => {
     const resp = await request(app)
         .delete(`/appts/${testApptsIds[0]}`)
       .set("authorization", `Bearer ${adminToken}`);
@@ -305,7 +305,7 @@ describe("PATCH /appts/:id", () => {
         })
       .set("authorization", `Bearer ${u1Token}`);
     expect(resp.body).toEqual({appt});
-    expect(1).toEqual(1);
+    expect(resp.statusCode).toEqual(200)
   });
 
   test("works for Admin", async () => {
@@ -322,8 +322,8 @@ describe("PATCH /appts/:id", () => {
           patient_last_name:"updated last Name",
         })
       .set("authorization", `Bearer ${adminToken}`);
-    expect(resp.body).toEqual({appt});
-    expect(1).toEqual(1);
+    expect(resp.body).toEqual({ appt });
+    expect(resp.statusCode).toEqual(200)
   });
   
   test("unauth for a none user", async () => {

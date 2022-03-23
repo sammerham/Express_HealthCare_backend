@@ -45,7 +45,7 @@ class Doctor {
       `,
       [first_name, last_name]
     );
-    return results.rows;
+    return results.rows[0];
   }
    /** get single doctor by ID.
  *

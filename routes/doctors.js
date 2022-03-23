@@ -3,6 +3,7 @@ const express = require("express");
 const router = express.Router();
 const jsonschema = require("jsonschema");
 const doctorNewSchema = require("../schemas/doctorNew.json");
+const doctorUpdateSchema = require("../schemas/doctorUpdate.json");
 const {ensureLoggedIn, ensureAdmin} = require('../middleware/auth')
 const {
   NotFoundError,
@@ -54,12 +55,16 @@ router.get("/name",ensureLoggedIn, async function (req, res, next) {
 router.get("/name/appts",ensureLoggedIn, async function (req, res, next) {
   try {
     const { fName, lName } = req.body;
-    const appts = await Appointment.showDocApptsByName(fName, lName);
-    if (!appts) throw new NotFoundError()
+    if (!fName || !lName) throw new BadRequestError(`Doctor first name and last are required`);
+    const doctor = await Doctor.showDoctorByName(fName, lName);
+
+    if(!doctor) throw new NotFoundError(`Dr. ${fName} ${lName} doesn't exist`)
+    const appts = await Doctor.showDocApptsByName(fName, lName);
+    if (!appts) throw new NotFoundError();
     if (appts.length === 0) return res.status(200).json({ appts:`No appts available for Dr. ${lName}` });
     return res.status(200).json({ appts });
   } catch (e) {
-    return next(new NotFoundError());
+    return next(e);
   }
 });
 //Get a list of all appointments for a particular doctor and particular day
@@ -68,7 +73,10 @@ router.get("/name/appts",ensureLoggedIn, async function (req, res, next) {
 router.get("/name/appts/date",ensureLoggedIn,  async function (req, res, next) {
   try {
     const { fName, lName, date } = req.body;
-    const appts = await Appointment.showDocApptsByDate(fName, lName, date);
+    if (!fName || !lName || date) throw new BadRequestError(`Doctor first name and last are required`);
+    const doctor = await Doctor.showDoctorByName(fName, lName);
+    if(!doctor) throw new NotFoundError(`Dr. ${fName} ${lName} doesn't exist`)
+    const appts = await Doctor.showDocApptsByDate(fName, lName, date);
     if (!appts) throw new NotFoundError();
     if (appts.length === 0) return res.status(200).json({ appts:`No appts booked for Dr. ${lName} on ${date}` });
     return res.status(200).json({ appts });
@@ -86,10 +94,10 @@ router.get("/:id",ensureLoggedIn, async function (req, res, next) {
   try {
     const { id } = req.params;
     const doctor = await Doctor.showDoctorById(id);
-    if (!doctor) throw new ExpressError(`No doctor with id: ${id}`, 404);
+    if (!doctor) throw new NotFoundError(`No doctor with id: ${id}`, 404);
     return res.status(200).json({ doctor });
   } catch (e) {
-    return next(new ExpressError(e));
+    return next(e);
   }
 });
 //Get a list of all appointments for a particular doctor by ID
@@ -100,7 +108,7 @@ router.get("/:id/appts", ensureLoggedIn, async function (req, res, next) {
     const { id } = req.params;
     const doctor = await Doctor.showDoctorById(id);
     if (!doctor) throw new ExpressError(`No doctor with id: ${id}`, 404);
-    const appts = await Appointment.showDocApptsById(id); 
+    const appts = await Doctor.showDocApptsById(id); 
     if (appts.length === 0) return res.status(200).json({ appts:`No appts booked for doctos with id :${id}` });
     if (!appts) throw new NotFoundError();
     return res.status(200).json({ appts });
@@ -118,7 +126,7 @@ router.get("/:id/appts/date", ensureLoggedIn, async function (req, res, next) {
     const { date } = req.body;
     const doctor = await Doctor.showDoctorById(id);
     if (!doctor) throw new ExpressError(`No doctor with id: ${id}`, 404);
-    const appts = await Appointment.showDocApptsByIdDate(id, date);
+    const appts = await Doctor.showDocApptsByIdDate(id, date);
     if (appts.length === 0) return res.status(200).json({ appts:`No appts booked for Dr. ${doctor.first_name} on ${date}` });
     if (!appts) throw new NotFoundError();
     return res.status(200).json({ appts });
@@ -157,7 +165,7 @@ router.delete("/:id", ensureLoggedIn, async function (req, res, next) {
     const doctor = await Doctor.showDoctorById(id);
     if (!doctor) throw new NotFoundError(`No matching doctor with ID: ${id}`,404);
     await Doctor.deleteDoctor(id);
-    return res.status(200).json({ message: "doctor deleted" });
+    return res.status(200).json({ message: "Doctor deleted" });
   } catch (e) {
     return next(new NotFoundError(e));
   }
@@ -167,15 +175,20 @@ router.delete("/:id", ensureLoggedIn, async function (req, res, next) {
 
 router.patch("/:id", ensureAdmin, async function (req, res, next) {
   let doctor;
-  const { fName, lName } = req.body;
-  const id = req.params.id;
   try {
+    const { fName, lName, email } = req.body;
+    const validator = jsonschema.validate(req.body, doctorUpdateSchema);
+    if (!validator.valid) {
+      const errs = validator.errors.map(e => e.stack.replaceAll('"', ''));
+      throw new BadRequestError(errs);
+    }
+    const id = req.params.id;
     const doctor = await Doctor.showDoctorById(id);
     if (!doctor) throw new NotFoundError(`No matching doctor with ID: ${id}`,404);
-    const updatedDoctor = await Doctor.updateDoctor(fName, lName, id);
+    const updatedDoctor = await Doctor.updateDoctor(fName, lName, email, id);
     return res.status(200).json({ doctor:updatedDoctor });
   } catch (e) {
-    return next(new NotFoundError(`No matching doctor with ID: ${id}`,404));
+    return next(e);
   };
 });
 
