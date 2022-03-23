@@ -199,7 +199,9 @@ class Appointment {
          appt_date,
          appt_time`
     const results = await db.query(querySql, [...values, id]);
-    return results.rows[0];
+    const appt = results.rows[0]
+    if (!appt) throw new NotFoundError(`No appt: ${id}`);
+    return appt;
   };
 
 

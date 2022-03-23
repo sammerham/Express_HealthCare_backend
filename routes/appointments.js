@@ -4,6 +4,7 @@ const { NotFoundError, BadRequestError, ExpressError } = require("../ExpressErro
 const Appointment = require("../models/appointment")
 const jsonschema = require("jsonschema");
 const apptNewSchema = require("../schemas/apptNew.json");
+const apptUpdateSchema = require("../schemas/apptUpdate.json");
 const { ensureLoggedIn } = require('../middleware/auth')
 
 
@@ -78,8 +79,7 @@ router.post("/", ensureLoggedIn, async function (req, res, next) {
 router.delete("/:id", ensureLoggedIn, async function (req, res, next) {
   try {
     const { id } = req.params;
-    const appt = await Appointment.getAppointmentByID(id);
-    console.log('appts in delete route', appt)
+    const appt = await Appointment.getAppointmentById(id);
     if (!appt) throw new ExpressError(`No appt with id : ${id}`, 404);
     await Appointment.deleteAppt(id);
     return res.status(200).json({ message: "Appt deleted" });
@@ -91,15 +91,19 @@ router.delete("/:id", ensureLoggedIn, async function (req, res, next) {
 /** PATCH /[id] - update fields in appt; return `{appt: appt}` */
 
 router.patch("/:id",ensureLoggedIn, async function (req, res, next) {
-  let appt;
-  const { id } = req.params;
   try {
-    appt = await Appointment.updateAppt(id, req.body);
-    if (!appt) throw new NotFoundError(`No matching appt: ${id}`)
+    const foundAppt = await Appointment.getAppointmentById(req.params.id)
+    if (!foundAppt) throw new NotFoundError(`No appt: ${req.params.id}`);
+    const validator = jsonschema.validate(req.body, apptUpdateSchema);
+    if (!validator.valid) {
+      const errs = validator.errors.map(e => e.stack.replaceAll('"', ''));
+      throw new BadRequestError(errs);
+    }
+    const appt = await Appointment.updateAppt(req.params.id, req.body);
     return res.status(200).json({ appt });
-  } catch (e) {
-    return next (new NotFoundError(e));
-  };
+  } catch (err) {
+    return next(err)
+  }
 });
 
 module.exports = router;
