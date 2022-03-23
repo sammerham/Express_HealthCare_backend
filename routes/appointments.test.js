@@ -351,7 +351,7 @@ describe("PATCH /appts/:id", () => {
         .send({
           patient_last_name:99,
         })
-        .set("authorization", `Bearer ${adminToken}`);
+        .set("authorization", `Bearer ${u1Token}`);
     expect(resp.statusCode).toEqual(400);
   });
 });
