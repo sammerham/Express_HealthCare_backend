@@ -10,7 +10,7 @@ const {
   BadRequestError,
   ExpressError } = require("../ExpressError/expressError");
 const Doctor = require("../models/doctor");
-const Appointment = require("../models/appointment")
+
 
 
 // routes for doctors
