@@ -11,7 +11,8 @@ function createToken(user) {
     username: user.username,
     isAdmin: user.isAdmin || false,
   };
-  return jwt.sign(payload, SECRET_KEY, JWT_OPTIONS);
+  // return jwt.sign(payload, SECRET_KEY, JWT_OPTIONS);// token expires in 1 hour
+  return jwt.sign(payload, SECRET_KEY);
 }
 
 module.exports = { createToken };

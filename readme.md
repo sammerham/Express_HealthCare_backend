@@ -14,7 +14,7 @@ npm install
 ```bash
 node server.js
 ``` 
-or
+If you have nodemon installed:
 ```bash
 nodemon server.js
 ``` 
