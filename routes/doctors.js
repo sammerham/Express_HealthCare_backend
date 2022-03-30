@@ -73,7 +73,8 @@ router.post("/name/appts",ensureLoggedIn, async function (req, res, next) {
 router.post("/name/appts/date",ensureLoggedIn,  async function (req, res, next) {
   try {
     const { fName, lName, date } = req.body;
-    if (!fName || !lName || date) throw new BadRequestError(`Doctor first name and last are required`);
+    console.log(fName, lName, date)
+    if (!fName || !lName || !date) throw new BadRequestError(`Doctor first name and last are required`);
     const doctor = await Doctor.showDoctorByName(fName, lName);
     if(!doctor) throw new NotFoundError(`Dr. ${fName} ${lName} doesn't exist`)
     const appts = await Doctor.showDocApptsByDate(fName, lName, date);
@@ -130,7 +131,6 @@ router.post("/:id/appts/date", ensureLoggedIn, async function (req, res, next) {
   try {
     const { id } = req.params;
     const { date } = req.body;
-    console.log(id, date, '******************')
     const doctor = await Doctor.showDoctorById(id);
     if (!doctor) throw new ExpressError(`No doctor with id: ${id}`, 404);
     const appts = await Doctor.showDocApptsByIdDate(id, date);
