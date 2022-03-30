@@ -51,6 +51,7 @@ router.post("/register", async function (req, res, next) {
       const errs = validator.errors.map(e => e.stack.replaceAll('"', ''));
       throw new BadRequestError(errs);
     }
+    console.log('req body coming from front end', req.body)
     const newUser = await User.register({ ...req.body, isAdmin: false });
     const token = createToken(newUser);
     return res.status(201).json({ token });

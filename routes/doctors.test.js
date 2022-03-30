@@ -70,7 +70,7 @@ describe("GET /doctors", () => {
 });
 
 /************************************** GET /doctors/name */
-describe("GET /doctors/name", () => {
+describe("POST /doctors/name", () => {
   test("works for logged in user", async () => {
     const doctor = {
       id: expect.any(Number),
@@ -79,7 +79,7 @@ describe("GET /doctors/name", () => {
       email: 'd1@test.com'
     };
     const resp = await request(app)
-      .get("/doctors/name")
+      .post("/doctors/name")
       .send({
         fName: 'd1',
         lName: 'test1'
@@ -96,7 +96,7 @@ describe("GET /doctors/name", () => {
       email: 'd1@test.com'
     };
     const resp = await request(app)
-      .get("/doctors/name")
+      .post("/doctors/name")
       .send({
         fName: 'd1',
         lName: 'test1'
@@ -107,7 +107,7 @@ describe("GET /doctors/name", () => {
 
   test("unauth for a none user", async () => {
     const resp = await request(app)
-      .get("/doctors/name")
+      .post("/doctors/name")
       .send({
         fName: 'd1',
         lName: 'test1'
@@ -117,7 +117,7 @@ describe("GET /doctors/name", () => {
   
   test("not found if doctor not found", async () => {
     const resp = await request(app)
-      .get("/doctors/name")
+      .post("/doctors/name")
       .send({
         fName: 'nope',
         lName: 'nope'
@@ -127,8 +127,8 @@ describe("GET /doctors/name", () => {
   });
 });
 
-/************************************** GET /doctors/name/appts */
-describe("GET /doctors/name/appts", () => { 
+/************************************** POST /doctors/name/appts */
+describe("POST /doctors/name/appts", () => { 
   const appts = [
       {
         id: expect.any(Number),
@@ -143,7 +143,7 @@ describe("GET /doctors/name/appts", () => {
     ];
   test("works for logged in user", async () => {
     const resp = await request(app)
-      .get("/doctors/name/appts")
+      .post("/doctors/name/appts")
       .send({
         fName: 'd1',
         lName: 'test1'
@@ -153,7 +153,7 @@ describe("GET /doctors/name/appts", () => {
   });
   test("works for Admin ", async () => {
     const resp = await request(app)
-      .get("/doctors/name/appts")
+      .post("/doctors/name/appts")
       .send({
         fName: 'd1',
         lName: 'test1'
@@ -164,7 +164,7 @@ describe("GET /doctors/name/appts", () => {
   
   test("unauth for a none user", async () => {
     const resp = await request(app)
-      .get("/doctors/name/appts")
+      .post("/doctors/name/appts")
       .send({
         fName: 'd1',
         lName: 'test1'
@@ -174,7 +174,7 @@ describe("GET /doctors/name/appts", () => {
 
   test("bad request if missing data", async () => {
     const resp = await request(app)
-      .get("/doctors/name/appts")
+      .post("/doctors/name/appts")
       .send({
         doctor_First_Name: "d1",
       })
@@ -199,7 +199,7 @@ describe("GET /doctors/name/appts/date", () => {
     ];
   test("works for logged in user", async () => {
     const resp = await request(app)
-      .get("/doctors/name/appts")
+      .post("/doctors/name/appts")
       .send({
         fName: 'd1',
         lName: 'test1',
@@ -210,7 +210,7 @@ describe("GET /doctors/name/appts/date", () => {
   });
   test("works for Admin ", async () => {
     const resp = await request(app)
-      .get("/doctors/name/appts")
+      .post("/doctors/name/appts")
       .send({
         fName: 'd1',
         lName: 'test1',
@@ -222,7 +222,7 @@ describe("GET /doctors/name/appts/date", () => {
   
   test("unauth for a none user", async () => {
     const resp = await request(app)
-      .get("/doctors/name/appts")
+      .post("/doctors/name/appts")
       .send({
         fName: 'd1',
         lName: 'test1',
@@ -233,7 +233,7 @@ describe("GET /doctors/name/appts/date", () => {
 
   test("bad request if missing data", async () => {
     const resp = await request(app)
-      .get("/doctors/name/appts")
+      .post("/doctors/name/appts")
       .send({
         doctor_First_Name: "d1",
         date:'2022-01-09'
@@ -337,8 +337,8 @@ describe("GET /doctors/:id/appts", () => {
 
 
 
-/************************************** GET /doctors/:id/appts/date */
-describe("GET /doctors/:id/appts/date", () => { 
+/************************************** POST /doctors/:id/appts/date */
+describe("POST /doctors/:id/appts/date", () => { 
   
   
   test("works for logged in user", async () => {
@@ -354,9 +354,10 @@ describe("GET /doctors/:id/appts/date", () => {
       },
   ];
     const resp = await request(app)
-      .get(`/doctors/${testDocIds[0]}/appts`)
+      .post(`/doctors/${testDocIds[0]}/appts/date`)
       .send({date:'2022-01-09'})
       .set("authorization", `Bearer ${u1Token}`);
+    console.log('res body--->>', resp.body)
 
     expect(resp.body).toEqual({appts} );
   });
@@ -375,7 +376,7 @@ describe("GET /doctors/:id/appts/date", () => {
       },
   ];
     const resp = await request(app)
-      .get(`/doctors/${testDocIds[0]}/appts`)
+      .post(`/doctors/${testDocIds[0]}/appts/date`)
       .send({date:'2022-01-09'})
       .set("authorization", `Bearer ${adminToken}`);
 
@@ -384,14 +385,14 @@ describe("GET /doctors/:id/appts/date", () => {
   
   test("unauth for a none user", async () => {
     const resp = await request(app)
-      .get(`/doctors/${testDocIds[0]}/appts`)
+      .post(`/doctors/${testDocIds[0]}/appts/date`)
       .send({date:'2022-01-09'})
     expect(resp.statusCode).toEqual(401);
   });
 
   test("not found if doctor not found", async () => {
     const resp = await request(app)
-      .get(`/doctors/99/appts`)
+      .post(`/doctors/99/appts/date`)
       .send({date:'2022-01-09'})
       .set("authorization", `Bearer ${u2Token}`);
     expect(resp.statusCode).toEqual(404);

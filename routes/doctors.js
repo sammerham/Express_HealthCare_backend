@@ -30,7 +30,7 @@ router.get('/' ,ensureLoggedIn,  async (req, res, next) => {
   }
 });
 
-/** GET /name - returns `{doctor: {
+/** POST /name - returns `{doctor: {
       "id": 1,
       "first_name": "Oliver",
       "last_name": "Twist",
@@ -38,7 +38,7 @@ router.get('/' ,ensureLoggedIn,  async (req, res, next) => {
     }}` */
 
 
-router.get("/name",ensureLoggedIn, async function (req, res, next) {
+router.post("/name",ensureLoggedIn, async function (req, res, next) {
   try {
     const { fName, lName } = req.body;
     const doctor = await Doctor.showDoctorByName(fName, lName);
@@ -50,9 +50,9 @@ router.get("/name",ensureLoggedIn, async function (req, res, next) {
 });
 
 //Get a list of all appointments for a particular doctor
-/** GET /name/appts- return data about one appt: `{appts: appts}` */
+/** POST /name/appts- return data about one appt: `{appts: appts}` */
 
-router.get("/name/appts",ensureLoggedIn, async function (req, res, next) {
+router.post("/name/appts",ensureLoggedIn, async function (req, res, next) {
   try {
     const { fName, lName } = req.body;
     if (!fName || !lName) throw new BadRequestError(`Doctor first name and last are required`);
@@ -70,7 +70,7 @@ router.get("/name/appts",ensureLoggedIn, async function (req, res, next) {
 //Get a list of all appointments for a particular doctor and particular day
 /** GET /name/appts/date- return data about one appt: `{appts: appts}` */
 
-router.get("/name/appts/date",ensureLoggedIn,  async function (req, res, next) {
+router.post("/name/appts/date",ensureLoggedIn,  async function (req, res, next) {
   try {
     const { fName, lName, date } = req.body;
     if (!fName || !lName || date) throw new BadRequestError(`Doctor first name and last are required`);
@@ -100,6 +100,9 @@ router.get("/:id",ensureLoggedIn, async function (req, res, next) {
     return next(e);
   }
 });
+
+
+
 //Get a list of all appointments for a particular doctor by ID
 /** GET /[id]/appts return data about one appt: `{appts: appts}` */
 
@@ -117,13 +120,17 @@ router.get("/:id/appts", ensureLoggedIn, async function (req, res, next) {
   }
 });
 
-//Get a list of all appointments for a particular doctor by ID and Date
-/** GET /[id] return data about one appt: `{appts: appts}` */
 
-router.get("/:id/appts/date", ensureLoggedIn, async function (req, res, next) {
+
+
+//Get a list of all appointments for a particular doctor by ID and Date
+/** POST /[id] return data about one appt: `{appts: appts}` */
+
+router.post("/:id/appts/date", ensureLoggedIn, async function (req, res, next) {
   try {
     const { id } = req.params;
     const { date } = req.body;
+    console.log(id, date, '******************')
     const doctor = await Doctor.showDoctorById(id);
     if (!doctor) throw new ExpressError(`No doctor with id: ${id}`, 404);
     const appts = await Doctor.showDocApptsByIdDate(id, date);
@@ -134,6 +141,11 @@ router.get("/:id/appts/date", ensureLoggedIn, async function (req, res, next) {
     return next(new NotFoundError(e));
   }
 });
+
+
+
+
+
 /** POST  - returns `{doctor: {
       "id": 1,
       "first_name": "Oliver",
