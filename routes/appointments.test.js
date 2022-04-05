@@ -24,7 +24,7 @@ beforeEach(commonBeforeEach);
 afterEach(commonAfterEach);
 afterAll(commonAfterAll);
 
-/************************************** GET /users */
+/************************************** GET /appts */
 describe("GET /appts", () => { 
   const appointments = [
         {
@@ -128,6 +128,74 @@ describe("GET /appts/:id", () => {
   });
 });
 
+
+/************************************** Post /appts/name */
+describe("POST /appts/name", () => { 
+
+  test("works for logged in user", async () => {
+    const resp = await request(app)
+      .post(`/appts/name`)
+      .send({
+        firstName: 'ptest1',
+        lastName:'test1'
+      })
+      .set("authorization", `Bearer ${u2Token}`);
+    expect(resp.body).toEqual({
+      appointments: [{
+        id: testApptsIds[0],
+        patient_first_name: 'ptest1',
+        patient_last_name: 'test1',
+        doctor_id: testDocIds[0],
+        appt_date: '2022-01-09T08:00:00.000Z',
+        appt_time: '10:00:00',
+        kind: 'Follow-up'
+      },]
+    });
+  });
+  
+  test("works for logged in Admin", async () => {
+    const resp = await request(app)
+      .post(`/appts/name`)
+      .send({
+        firstName: 'ptest1',
+        lastName:'test1'
+      })
+      .set("authorization", `Bearer ${adminToken}`);
+    expect(resp.body).toEqual({
+      appointments: [{
+        id: testApptsIds[0],
+        patient_first_name: 'ptest1',
+        patient_last_name: 'test1',
+        doctor_id: testDocIds[0],
+        appt_date: '2022-01-09T08:00:00.000Z',
+        appt_time: '10:00:00',
+        kind: 'Follow-up'
+      },]
+    });
+  });
+
+  test("unauth for a none user", async () => {
+    const resp = await request(app)
+      .post(`/appts/name`)
+      .send({
+        firstName: 'ptest1',
+        lastName:'test1'
+      })
+    expect(resp.statusCode).toEqual(401);
+  });
+
+  test("not found if appt not found", async () => {
+    const resp = await request(app)
+      .post(`/appts/name`)
+      .send({
+        firstName: 'NotFound',
+        lastName:'NotFound22'
+      })
+      .set("authorization", `Bearer ${u2Token}`);
+    expect(resp.statusCode).toEqual(404);
+  });
+});
+
 /************************************** POST / appts */
 describe("POST /appts", () => { 
   test("works for logged in users ", async () => {
@@ -145,7 +213,7 @@ describe("POST /appts", () => {
     .set("authorization", `Bearer ${u1Token}`);
     expect(resp.statusCode).toEqual(201);
     expect(resp.body).toEqual({
-      appt: {
+      appointment: {
         id: expect.any(Number),
         patient_first_name: 'addtest',
         patient_last_name: 'test',
@@ -171,7 +239,7 @@ describe("POST /appts", () => {
     .set("authorization", `Bearer ${adminToken}`);
     expect(resp.statusCode).toEqual(201);
     expect(resp.body).toEqual({
-      appt: {
+      appointment: {
         id: expect.any(Number),
         patient_first_name: 'addtest',
         patient_last_name: 'test',
@@ -304,7 +372,7 @@ describe("PATCH /appts/:id", () => {
           patient_first_name:"Updated Name",
         })
       .set("authorization", `Bearer ${u1Token}`);
-    expect(resp.body).toEqual({appt});
+    expect(resp.body).toEqual({appointment:appt});
     expect(resp.statusCode).toEqual(200)
   });
 
@@ -322,7 +390,7 @@ describe("PATCH /appts/:id", () => {
           patient_last_name:"updated last Name",
         })
       .set("authorization", `Bearer ${adminToken}`);
-    expect(resp.body).toEqual({ appt });
+    expect(resp.body).toEqual({ appointment:appt });
     expect(resp.statusCode).toEqual(200)
   });
   

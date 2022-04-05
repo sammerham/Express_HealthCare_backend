@@ -25,8 +25,20 @@ router.get('/:id', ensureLoggedIn, async (req, res, next) => {
   try {
     const { id } = req.params;
     const appointment = await Appointment.getAppointmentById(id);
-    if(!appointment) throw new ExpressError(`No appt with id : ${id}`, 404);
+    if (!appointment) throw new ExpressError(`No appt with id : ${id}`, 404);
     return res.status(200).json({ appointment });
+  } catch (e) {
+    return next(new NotFoundError(e));
+  }
+});
+
+//Get all appointments by patient name --> appointments:[{}, {}, ...]
+router.post('/name', ensureLoggedIn, async (req, res, next) => {
+  try {
+    const { firstName, lastName } = req.body;
+    const appointments = await Appointment.getApptsByName(firstName, lastName);
+    if(appointments.length === 0 ) throw new ExpressError(`No appt for ${firstName} ${lastName}`, 404);
+    return res.status(200).json({ appointments });
   } catch (e) {
     return next(new NotFoundError(e));
   }
@@ -67,7 +79,7 @@ router.post("/", ensureLoggedIn, async function (req, res, next) {
       time,
       kind
     );
-    return res.status(201).json({ appt });
+    return res.status(201).json({ appointment:appt });
   } catch (e) {
     return next (new BadRequestError(e));
   }
@@ -100,7 +112,7 @@ router.patch("/:id",ensureLoggedIn, async function (req, res, next) {
       throw new BadRequestError(errs);
     }
     const appt = await Appointment.updateAppt(req.params.id, req.body);
-    return res.status(200).json({ appt });
+    return res.status(200).json({ appointment:appt });
   } catch (err) {
     return next(err)
   }

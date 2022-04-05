@@ -357,8 +357,6 @@ describe("POST /doctors/:id/appts/date", () => {
       .post(`/doctors/${testDocIds[0]}/appts/date`)
       .send({date:'2022-01-09'})
       .set("authorization", `Bearer ${u1Token}`);
-    console.log('res body--->>', resp.body)
-
     expect(resp.body).toEqual({appts} );
   });
 
@@ -505,14 +503,14 @@ describe("DELETE /doctors/:id", () => {
     const resp = await request(app)
         .delete(`/doctors/${testDocIds[0]}`)
       .set("authorization", `Bearer ${u1Token}`);
-    expect(resp.body).toEqual({  message: "Doctor deleted" });
+    expect(resp.body).toEqual({  message: "Doctor deleted!" });
   });
 
   test("works for logged in users", async () => {
     const resp = await request(app)
         .delete(`/doctors/${testDocIds[0]}`)
       .set("authorization", `Bearer ${adminToken}`);
-    expect(resp.body).toEqual({  message: "Doctor deleted" });
+    expect(resp.body).toEqual({  message: "Doctor deleted!" });
   });
 
   test("unauth for a none user", async () => {
