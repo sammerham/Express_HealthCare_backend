@@ -72,42 +72,42 @@ describe("POST /auth/login", () => {
 });
 /************************************** POST /auth/register */
 
-describe("POST /auth/register", () => { 
-  test("works", async () => {
-    const resp = await request(app)
-        .post("/auth/register")
-        .send({
-          username: "new",
-          firstName: "first",
-          lastName: "last",
-          password: "password",
-          email: "new@email.com",
-        });
-    expect(resp.statusCode).toEqual(201);
-    expect(resp.body).toEqual({
-      "token": expect.any(String),
-    });
-  });
+// describe("POST /auth/register", () => { 
+//   test("works", async () => {
+//     const resp = await request(app)
+//         .post("/auth/register")
+//         .send({
+//           username: "new",
+//           firstName: "first",
+//           lastName: "last",
+//           password: "password",
+//           email: "new@email.com",
+//         });
+//     expect(resp.statusCode).toEqual(201);
+//     expect(resp.body).toEqual({
+//       "token": expect.any(String),
+//     });
+//   });
 
-  test("bad request with missing fields", async () => {
-    const resp = await request(app)
-        .post("/auth/register")
-        .send({
-          username: "new",
-        });
-    expect(resp.statusCode).toEqual(400);
-  });
+//   test("bad request with missing fields", async () => {
+//     const resp = await request(app)
+//         .post("/auth/register")
+//         .send({
+//           username: "new",
+//         });
+//     expect(resp.statusCode).toEqual(400);
+//   });
 
-  test("bad request with invalid data", async () => {
-      const resp = await request(app)
-          .post("/auth/register")
-          .send({
-            username: "new",
-            firstName: "first",
-            lastName: 33,
-            password: "password",
-            email: "not-an-email",
-          });
-      expect(resp.statusCode).toEqual(400);
-    });
-});
+//   test("bad request with invalid data", async () => {
+//       const resp = await request(app)
+//           .post("/auth/register")
+//           .send({
+//             username: "new",
+//             firstName: "first",
+//             lastName: 33,
+//             password: "password",
+//             email: "not-an-email",
+//           });
+//       expect(resp.statusCode).toEqual(400);
+//     });
+// });

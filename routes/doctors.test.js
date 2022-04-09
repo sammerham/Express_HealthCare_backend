@@ -81,8 +81,8 @@ describe("POST /doctors/name", () => {
     const resp = await request(app)
       .post("/doctors/name")
       .send({
-        fName: 'd1',
-        lName: 'test1'
+        firstName: 'd1',
+        lastName: 'test1'
       })
       .set("authorization", `Bearer ${u1Token}`);
     expect(resp.body).toEqual({doctor});
@@ -98,8 +98,8 @@ describe("POST /doctors/name", () => {
     const resp = await request(app)
       .post("/doctors/name")
       .send({
-        fName: 'd1',
-        lName: 'test1'
+        firstName: 'd1',
+        lastName: 'test1'
       })
       .set("authorization", `Bearer ${adminToken}`);
     expect(resp.body).toEqual({doctor});
@@ -109,8 +109,8 @@ describe("POST /doctors/name", () => {
     const resp = await request(app)
       .post("/doctors/name")
       .send({
-        fName: 'd1',
-        lName: 'test1'
+        firstName: 'd1',
+        lastName: 'test1'
       })
     expect(resp.statusCode).toEqual(401);
   });
@@ -119,8 +119,8 @@ describe("POST /doctors/name", () => {
     const resp = await request(app)
       .post("/doctors/name")
       .send({
-        fName: 'nope',
-        lName: 'nope'
+        firstName: 'nope',
+        lastName: 'nope'
       })
       .set("authorization", `Bearer ${u2Token}`);
     expect(resp.statusCode).toEqual(404);
@@ -145,8 +145,8 @@ describe("POST /doctors/name/appts", () => {
     const resp = await request(app)
       .post("/doctors/name/appts")
       .send({
-        fName: 'd1',
-        lName: 'test1'
+        firstName: 'd1',
+        lastName: 'test1'
       })
       .set("authorization", `Bearer ${u1Token}`);
     expect(resp.body).toEqual({ appts});
@@ -155,8 +155,8 @@ describe("POST /doctors/name/appts", () => {
     const resp = await request(app)
       .post("/doctors/name/appts")
       .send({
-        fName: 'd1',
-        lName: 'test1'
+        firstName: 'd1',
+        lastName: 'test1'
       })
       .set("authorization", `Bearer ${adminToken}`);
     expect(resp.body).toEqual({ appts});
@@ -166,8 +166,8 @@ describe("POST /doctors/name/appts", () => {
     const resp = await request(app)
       .post("/doctors/name/appts")
       .send({
-        fName: 'd1',
-        lName: 'test1'
+        firstName: 'd1',
+        lastName: 'test1'
       });
     expect(resp.statusCode).toEqual(401);
   });
@@ -201,8 +201,8 @@ describe("GET /doctors/name/appts/date", () => {
     const resp = await request(app)
       .post("/doctors/name/appts")
       .send({
-        fName: 'd1',
-        lName: 'test1',
+        firstName: 'd1',
+        lastName: 'test1',
         date:'2022-01-09'
       })
       .set("authorization", `Bearer ${u1Token}`);
@@ -212,8 +212,8 @@ describe("GET /doctors/name/appts/date", () => {
     const resp = await request(app)
       .post("/doctors/name/appts")
       .send({
-        fName: 'd1',
-        lName: 'test1',
+        firstName: 'd1',
+        lastName: 'test1',
         date:'2022-01-09'
       })
       .set("authorization", `Bearer ${adminToken}`);
@@ -224,8 +224,8 @@ describe("GET /doctors/name/appts/date", () => {
     const resp = await request(app)
       .post("/doctors/name/appts")
       .send({
-        fName: 'd1',
-        lName: 'test1',
+        firstName: 'd1',
+        lastName: 'test1',
         date:'2022-01-09'
       });
     expect(resp.statusCode).toEqual(401);
@@ -404,8 +404,8 @@ describe("POST /appts", () => {
     const resp = await request(app)
         .post("/doctors")
         .send({
-    fName: "newDoctor",
-    lName: "test1New",
+    firstName: "newDoctor",
+    lastName: "test1New",
     email:'new@new.com'
     })
     .set("authorization", `Bearer ${u1Token}`);
@@ -424,8 +424,8 @@ describe("POST /appts", () => {
     const resp = await request(app)
         .post("/doctors")
         .send({
-    fName: "newDoctor",
-    lName: "test1New",
+    firstName: "newDoctor",
+    lastName: "test1New",
     email:'new@new.com'
     })
     .set("authorization", `Bearer ${adminToken}`);
@@ -443,8 +443,8 @@ describe("POST /appts", () => {
       const resp = await request(app)
         .post("/doctors")
         .send({
-          fName: "newDoctor",
-          lName: "test1New",
+          firstName: "newDoctor",
+          lastName: "test1New",
           email: 'new@new.com'
         });
     expect(resp.statusCode).toEqual(401);
@@ -454,8 +454,8 @@ describe("POST /appts", () => {
     const resp = await request(app)
       .post("/doctors")
       .send({
-        fName: "newDoctor",
-        lName: "test1New",
+        firstName: "newDoctor",
+        lastName: "test1New",
       })
       .set("authorization", `Bearer ${u1Token}`);
     expect(resp.statusCode).toEqual(400);
@@ -465,8 +465,8 @@ test("bad request if invalid data", async () => {
   const resp = await request(app)
       .post("/doctors")
         .send({
-          fName: "newDoctor",
-          lName: "test1New",
+          firstName: "newDoctor",
+          lastName: "test1New",
           email: 'invalid email'
         })
       .set("authorization", `Bearer ${u1Token}`);
@@ -478,16 +478,16 @@ test("bad request if invalid data", async () => {
     await request(app)
         .post("/doctors")
         .send({
-          fName: "newDoctor",
-          lName: "test1New",
+          firstName: "newDoctor",
+          lastName: "test1New",
           email: 'invalid email'
         })
         .set("authorization", `Bearer ${u1Token}`);
     const resp = await request(app)
         .post("/doctors")
         .send({
-          fName: "newDoctor",
-          lName: "test1New",
+          firstName: "newDoctor",
+          lastName: "test1New",
           email: 'invalid email'
         })
         .set("authorization", `Bearer ${u1Token}`);
@@ -540,8 +540,8 @@ describe("PATCH /doctors/:id", () => {
     const resp = await request(app)
       .patch(`/doctors/${testDocIds[0]}`)
       .send({
-        fName: "updated first Name",
-        lName: "updated last Name",
+        firstName: "updated first Name",
+        lastName: "updated last Name",
         email:"updated@updated.com"
         })
       .set("authorization", `Bearer ${adminToken}`);
@@ -558,8 +558,8 @@ describe("PATCH /doctors/:id", () => {
     const resp = await request(app)
       .patch(`/doctors/${testDocIds[0]}`)
       .send({
-        fName: "updated first Name",
-        lName: "updated last Name",
+        firstName: "updated first Name",
+        lastName: "updated last Name",
         email:"updated@updated.com"
         })
       .set("authorization", `Bearer ${u1Token}`);
@@ -570,8 +570,8 @@ describe("PATCH /doctors/:id", () => {
     const resp = await request(app)
       .patch(`/doctors/${testDocIds[0]}`)
       .send({
-        fName: "updated first Name",
-        lName: "updated last Name",
+        firstName: "updated first Name",
+        lastName: "updated last Name",
         email: "updated@updated.com"
       });
     expect(resp.statusCode).toEqual(401);
@@ -581,8 +581,8 @@ describe("PATCH /doctors/:id", () => {
     const resp = await request(app)
       .patch(`/doctors/99`)
       .send({
-        fName: "updated first Name",
-        lName: "updated last Name",
+        firstName: "updated first Name",
+        lastName: "updated last Name",
         email: "updated@updated.com"
       })
       .set("authorization", `Bearer ${adminToken}`);
@@ -593,8 +593,8 @@ describe("PATCH /doctors/:id", () => {
     const resp = await request(app)
       .patch(`/doctors/${testDocIds[1]}`)
       .send({
-        fName: "updated first Name",
-        lName: "updated last Name",
+        firstName: "updated first Name",
+        lastName: "updated last Name",
         email: "in valid email"
       })
       .set("authorization", `Bearer ${adminToken}`);

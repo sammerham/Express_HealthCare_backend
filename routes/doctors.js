@@ -40,12 +40,12 @@ router.get('/' ,ensureLoggedIn,  async (req, res, next) => {
 
 router.post("/name",ensureLoggedIn, async function (req, res, next) {
   try {
-    const { fName, lName } = req.body;
-    const doctor = await Doctor.showDoctorByName(fName, lName);
+    const { firstName, lastName } = req.body;
+    const doctor = await Doctor.showDoctorByName(firstName, lastName);
     if (!doctor) throw new ExpressError('No doctor with this name', 404);
     return res.status(200).json({ doctor });
   } catch (e) {
-    return next(new ExpressError(`${req.body.fName} ${req.body.lName} doesn't exist`, 404));
+    return next(new ExpressError(`${req.body.firstName} ${req.body.lastName} doesn't exist`, 404));
   }
 });
 
@@ -54,14 +54,14 @@ router.post("/name",ensureLoggedIn, async function (req, res, next) {
 
 router.post("/name/appts",ensureLoggedIn, async function (req, res, next) {
   try {
-    const { fName, lName } = req.body;
-    if (!fName || !lName) throw new BadRequestError(`Doctor first name and last are required`);
-    const doctor = await Doctor.showDoctorByName(fName, lName);
+    const { firstName, lastName } = req.body;
+    if (!firstName || !lastName) throw new BadRequestError(`Doctor first name and last are required`);
+    const doctor = await Doctor.showDoctorByName(firstName, lastName);
 
-    if(!doctor) throw new NotFoundError(`Dr. ${fName} ${lName} doesn't exist`)
-    const appts = await Doctor.showDocApptsByName(fName, lName);
+    if(!doctor) throw new NotFoundError(`Dr. ${firstName} ${lastName} doesn't exist`)
+    const appts = await Doctor.showDocApptsByName(firstName, lastName);
     if (!appts) throw new NotFoundError();
-    if (appts.length === 0) return res.status(200).json({ appts:`No appts available for Dr. ${lName}` });
+    if (appts.length === 0) return res.status(200).json({ appts:`No appts available for Dr. ${lastName}` });
     return res.status(200).json({ appts });
   } catch (e) {
     return next(e);
@@ -72,14 +72,14 @@ router.post("/name/appts",ensureLoggedIn, async function (req, res, next) {
 
 router.post("/name/appts/date",ensureLoggedIn,  async function (req, res, next) {
   try {
-    const { fName, lName, date } = req.body;
-    console.log(fName, lName, date)
-    if (!fName || !lName || !date) throw new BadRequestError(`Doctor first name and last are required`);
-    const doctor = await Doctor.showDoctorByName(fName, lName);
-    if(!doctor) throw new NotFoundError(`Dr. ${fName} ${lName} doesn't exist`)
-    const appts = await Doctor.showDocApptsByDate(fName, lName, date);
+    const { firstName, lastName, date } = req.body;
+    console.log(firstName, lastName, date)
+    if (!firstName || !lastName || !date) throw new BadRequestError(`Doctor first name and last are required`);
+    const doctor = await Doctor.showDoctorByName(firstName, lastName);
+    if(!doctor) throw new NotFoundError(`Dr. ${firstName} ${lastName} doesn't exist`)
+    const appts = await Doctor.showDocApptsByDate(firstName, lastName, date);
     if (!appts) throw new NotFoundError();
-    if (appts.length === 0) return res.status(200).json({ appts:`No appts booked for Dr. ${lName} on ${date}` });
+    if (appts.length === 0) return res.status(200).json({ appts:`No appts booked for Dr. ${lastName} on ${date}` });
     return res.status(200).json({ appts });
   } catch (e) {
     return next(new NotFoundError());
@@ -153,13 +153,13 @@ router.post("/:id/appts/date", ensureLoggedIn, async function (req, res, next) {
 
 router.post("/",ensureLoggedIn, async function (req, res, next) {
   try {
-    const { fName, lName, email } = req.body;
+    const { firstName, lastName, email } = req.body;
     const validator = jsonschema.validate(req.body, doctorNewSchema);
     if (!validator.valid) {
       const errs = validator.errors.map(e => e.stack.replaceAll('"', ''));
       throw new BadRequestError(errs);
     }
-    const doctor = await Doctor.addDoctor(fName, lName, email);
+    const doctor = await Doctor.addDoctor(firstName, lastName, email);
     return res.status(201).json({ doctor });
   } catch (e) {
     return next(e);
@@ -185,7 +185,7 @@ router.delete("/:id", ensureLoggedIn, async function (req, res, next) {
 router.patch("/:id", ensureAdmin, async function (req, res, next) {
   let doctor;
   try {
-    const { fName, lName, email } = req.body;
+    const { firstName, lastName, email } = req.body;
     const validator = jsonschema.validate(req.body, doctorUpdateSchema);
     if (!validator.valid) {
       const errs = validator.errors.map(e => e.stack.replaceAll('"', ''));
@@ -194,7 +194,7 @@ router.patch("/:id", ensureAdmin, async function (req, res, next) {
     const id = req.params.id;
     const doctor = await Doctor.showDoctorById(id);
     if (!doctor) throw new NotFoundError(`No matching doctor with ID: ${id}`,404);
-    const updatedDoctor = await Doctor.updateDoctor(fName, lName, email, id);
+    const updatedDoctor = await Doctor.updateDoctor(firstName, lastName, email, id);
     return res.status(200).json({ doctor:updatedDoctor });
   } catch (e) {
     return next(e);
