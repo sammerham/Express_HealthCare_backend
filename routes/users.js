@@ -70,13 +70,28 @@ router.get("/", ensureAdmin, async function (req, res, next) {
 
 router.get("/:username", ensureCorrectUserOrAdmin, async function (req, res, next) {
   try {
-    const user = await User.get(req.params.username);
+    const user = await User.getByUsername(req.params.username);
     return res.status(200).json({ user });
   } catch (err) {
     return next(err);
   }
 });
 
+
+/** POST /name - returns `{user: { username, first_name, last_name, is_admin }}` */
+
+
+router.post("/name",ensureAdmin, async function (req, res, next) {
+  try {
+    const { firstName, lastName } = req.body;
+    const user = await User.getByName(firstName, lastName);
+    console.log('user in get name route ---->>', user)
+    if (!user) throw new ExpressError('No user with this name', 404);
+    return res.status(200).json({ user });
+  } catch (e) {
+    return next(new ExpressError(`${req.body.firstName} ${req.body.lastName} doesn't exist`, 404));
+  }
+});
 
 /** PATCH /[username] { user } => { user }
  *

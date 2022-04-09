@@ -109,11 +109,11 @@ describe("register", () => {
 });
 
 
-/************************************** get */
+/************************************** get by username */
 
-describe("get", () => {
+describe("get by username", () => {
   test("works", async () => {
-    const user = await User.get("u1");
+    const user = await User.getByUsername("u1");
     expect(user).toEqual({
       username: "u1",
       firstName: "U1F",
@@ -125,7 +125,34 @@ describe("get", () => {
 
   test("not found if no such user", async function () {
     try {
-      await User.get("nope");
+      await User.getByUsername("nope");
+      fail();
+    } catch (err) {
+      expect(err instanceof NotFoundError).toBeTruthy();
+    }
+  });
+});
+
+
+
+
+/************************************** get by firstName / lastName */
+
+describe("get by Name", () => {
+  test("works", async () => {
+    const user = await User.getByName('U1F', 'U1L');
+    expect(user).toEqual({
+      username: "u1",
+      firstName: "U1F",
+      lastName: "U1L",
+      email: "u1@email.com",
+      isAdmin: false
+    });
+  });
+
+  test("not found if no such user", async function () {
+    try {
+      await User.getByName("wronguser", "badUser");
       fail();
     } catch (err) {
       expect(err instanceof NotFoundError).toBeTruthy();

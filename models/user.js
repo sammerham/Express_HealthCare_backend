@@ -126,7 +126,7 @@ class User {
    * Throws NotFoundError if user not found.
    **/
 
-  static async get(username) {
+  static async getByUsername(username) {
     const userRes = await db.query(
           `SELECT username,
                   first_name AS "firstName",
@@ -141,6 +141,34 @@ class User {
     const user = userRes.rows[0];
 
     if (!user) throw new NotFoundError(`No user: ${username}`);
+    return user;
+  }
+
+
+
+  /** Given a first Name and last Name, return data about user.
+   *
+   * Returns { username, first_name, last_name, is_admin }
+   * Throws NotFoundError if user not found.
+   **/
+
+  static async getByName(firstName, lastName) {
+    const userRes = await db.query(
+          `SELECT username,
+                  first_name AS "firstName",
+                  last_name AS "lastName",
+                  email,
+                  is_admin AS "isAdmin"
+           FROM users
+           WHERE first_name = $1
+            AND
+            last_name=$2`
+        ,[firstName, lastName],
+    );
+
+    const user = userRes.rows[0];
+
+    if (!user) throw new NotFoundError(`${firstName} ${lastName} was not found!`);
     return user;
   }
 

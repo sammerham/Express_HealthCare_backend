@@ -222,6 +222,58 @@ describe("GET /users/:username", () => {
   });
 });
 
+
+/************************************** POST /users/name */
+
+describe("POST /users/name", () => { 
+  test("works for admin", async () => {
+    const resp = await request(app)
+      .post(`/users/name`)
+      .send({
+        firstName: "U1F",
+        lastName: "U1L",
+      })
+      .set("authorization", `Bearer ${adminToken}`);
+    expect(resp.body).toEqual({
+      user: {
+        username: "u1",
+        firstName: "U1F",
+        lastName: "U1L",
+        email: "user1@user.com",
+        isAdmin: false,
+      },
+    });
+  });
+
+  test("unauth for other users", async () => {
+    const resp = await request(app)
+      .post(`/users/name`)
+      .send({
+        firstName: "U1F",
+        lastName: "U1L",
+      })
+      .set("authorization", `Bearer ${u2Token}`);
+    expect(resp.statusCode).toEqual(401);
+  });
+  
+  test("unauth for a none user ", async () => {
+    const resp = await request(app)
+      .post(`/users/name`)
+    expect(resp.statusCode).toEqual(401);
+  });
+  
+  // test("not found if user not found", async () => {
+  //   const resp = await request(app)
+  //     .post(`/users/name`)
+  //     .send({
+  //       firstName: "nope",
+  //       lastName: "nope",
+  //     })
+  //     .set("authorization", `Bearer ${adminToken}`);
+  //   expect(resp.statusCode).toEqual(404);
+  // });
+});
+
 /************************************** PATCH /users/:username */
 
 describe("PATCH /users/:username", () => {
