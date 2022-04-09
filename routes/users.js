@@ -84,12 +84,12 @@ router.get("/:username", ensureCorrectUserOrAdmin, async function (req, res, nex
 router.post("/name",ensureAdmin, async function (req, res, next) {
   try {
     const { firstName, lastName } = req.body;
+    if (!(firstName || lastName) ) throw new ExpressError('First name and Last name are required', 404);
     const user = await User.getByName(firstName, lastName);
-    console.log('user in get name route ---->>', user)
     if (!user) throw new ExpressError('No user with this name', 404);
     return res.status(200).json({ user });
   } catch (e) {
-    return next(new ExpressError(`${req.body.firstName} ${req.body.lastName} doesn't exist`, 404));
+    return next(e);
   }
 });
 
