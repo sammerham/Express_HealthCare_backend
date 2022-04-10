@@ -262,16 +262,16 @@ describe("POST /users/name", () => {
     expect(resp.statusCode).toEqual(401);
   });
   
-  // test("not found if user not found", async () => {
-  //   const resp = await request(app)
-  //     .post(`/users/name`)
-  //     .send({
-  //       firstName: "nope",
-  //       lastName: "nope",
-  //     })
-  //     .set("authorization", `Bearer ${adminToken}`);
-  //   expect(resp.statusCode).toEqual(404);
-  // });
+  test("not found if user not found", async () => {
+    const resp = await request(app)
+      .post(`/users/name`)
+      .send({
+        firstName: "nope",
+        lastName: "nope",
+      })
+      .set("authorization", `Bearer ${adminToken}`);
+    expect(resp.statusCode).toEqual(404);
+  });
 });
 
 /************************************** PATCH /users/:username */

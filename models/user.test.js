@@ -153,8 +153,8 @@ describe("get by Name", () => {
   test("not found if no such user", async function () {
     try {
       await User.getByName("wronguser", "badUser");
-      fail();
     } catch (err) {
+      console.log('err in user test')
       expect(err instanceof NotFoundError).toBeTruthy();
     }
   });

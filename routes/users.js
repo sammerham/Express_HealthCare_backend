@@ -5,7 +5,7 @@
 const jsonschema = require("jsonschema");
 const express = require("express");
 const { ensureAdmin, ensureCorrectUserOrAdmin } = require("../middleware/auth");
-const { BadRequestError } = require("../ExpressError/expressError");
+const { BadRequestError, ExpressError, NotFoundError } = require("../ExpressError/expressError");
 const User = require("../models/user");
 const { createToken } = require("../helper/token");
 const userNewSchema = require("../schemas/userNew.json");
@@ -84,9 +84,10 @@ router.get("/:username", ensureCorrectUserOrAdmin, async function (req, res, nex
 router.post("/name",ensureAdmin, async function (req, res, next) {
   try {
     const { firstName, lastName } = req.body;
-    if (!(firstName || lastName) ) throw new ExpressError('First name and Last name are required', 404);
+    console.log('req body coming from client --->>', req.body.firstName)
+    if ((firstName === '' || lastName === '') ) throw new ExpressError('First name and Last name are required', 404);
     const user = await User.getByName(firstName, lastName);
-    if (!user) throw new ExpressError('No user with this name', 404);
+    if (!user) throw new NotFoundError(`No user found with this name: ${firstName} ${lastName}`, 404);
     return res.status(200).json({ user });
   } catch (e) {
     return next(e);

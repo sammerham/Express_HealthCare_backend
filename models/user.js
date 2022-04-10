@@ -168,7 +168,7 @@ class User {
 
     const user = userRes.rows[0];
 
-    if (!user) throw new NotFoundError(`${firstName} ${lastName} was not found!`);
+    // if (!user) throw new NotFoundError(`${firstName} ${lastName} was not found!`);
     return user;
   }
 
