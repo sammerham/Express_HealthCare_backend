@@ -36,11 +36,12 @@ router.get('/:id', ensureLoggedIn, async (req, res, next) => {
 router.post('/name', ensureLoggedIn, async (req, res, next) => {
   try {
     const { firstName, lastName } = req.body;
+    if ((firstName === '' || lastName === '') ) throw new ExpressError('First name and Last name are required!', 404);
     const appointments = await Appointment.getApptsByName(firstName, lastName);
     if(appointments.length === 0 ) throw new ExpressError(`No appt for ${firstName} ${lastName}`, 404);
     return res.status(200).json({ appointments });
   } catch (e) {
-    return next(new NotFoundError(e));
+    return next(e);
   }
 });
 

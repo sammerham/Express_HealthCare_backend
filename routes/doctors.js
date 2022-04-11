@@ -41,11 +41,12 @@ router.get('/' ,ensureLoggedIn,  async (req, res, next) => {
 router.post("/name",ensureLoggedIn, async function (req, res, next) {
   try {
     const { firstName, lastName } = req.body;
+    if ((firstName === '' || lastName === '') ) throw new ExpressError('First name and Last name are required!', 404);
     const doctor = await Doctor.showDoctorByName(firstName, lastName);
-    if (!doctor) throw new ExpressError('No doctor with this name', 404);
+    if (!doctor) throw new ExpressError(`Doctor ${req.body.firstName} ${req.body.lastName} doesn't exist!`, 404);
     return res.status(200).json({ doctor });
   } catch (e) {
-    return next(new ExpressError(`${req.body.firstName} ${req.body.lastName} doesn't exist`, 404));
+    return next(e);
   }
 });
 
