@@ -24,7 +24,7 @@
       "maxLength": 60,
       "format": "email"
     },
-    "isAdmin":  { "enum": ["true", "false"] }
+    "isAdmin":  { "type":"boolean" }
   },
   "additionalProperties": false,
   "required": []
