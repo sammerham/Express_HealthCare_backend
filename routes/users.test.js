@@ -32,9 +32,9 @@ describe("POST /users", () => {
           lastName: "Last-newL",
           password: "password-new",
           email: "new@email.com",
-          isAdmin: false,
+          isAdmin: 'false',
         })
-        .set("authorization", `Bearer ${adminToken}`);
+      .set("authorization", `Bearer ${adminToken}`);
     expect(resp.statusCode).toEqual(201);
     expect(resp.body).toEqual({
       user: {
@@ -55,7 +55,7 @@ describe("POST /users", () => {
           lastName: "Last-newL",
           password: "password-new",
           email: "new@email.com",
-          isAdmin: true,
+          isAdmin: 'true',
         })
         .set("authorization", `Bearer ${adminToken}`);
     expect(resp.statusCode).toEqual(201);
