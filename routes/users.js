@@ -33,8 +33,9 @@ router.post("/", ensureAdmin, async function (req, res, next) {
       const errs = validator.errors.map(e => e.stack);
       throw new BadRequestError(errs);
     }
-
+    console.log('data coming from client --->>', req.body)
     const user = await User.register(req.body);
+    console.log('user after called from client ---->>', user)
     const token = createToken(user);
     return res.status(201).json({ user, token });
   } catch (err) {
