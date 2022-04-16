@@ -48,7 +48,6 @@ router.post('/name', ensureLoggedIn, async (req, res, next) => {
 /** POST / - create appt from data; return `{appt: appt}` */
 
 router.post("/", ensureLoggedIn, async function (req, res, next) {
-
   try {
     const validator = jsonschema.validate(req.body, apptNewSchema);
     if (!validator.valid) {
