@@ -3,6 +3,16 @@
   "$id": "http://example.com/example.json",
   "type": "object",
   "properties": {
+    "doctor_First_Name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 30
+    },
+    "doctor_Last_Name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 30
+    },
      "patient_first_name": {
       "type": "string",
       "minLength": 1,
@@ -13,11 +23,11 @@
       "minLength": 1,
       "maxLength": 30
     },
-    "date": {
+    "appt_date": {
       "type": "string",
       "format": "date"
     },
-      "time": {
+      "appt_time": {
       "type": "string",
       "format": "time"
     },

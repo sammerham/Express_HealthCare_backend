@@ -177,15 +177,27 @@ class Appointment {
   }
   /** edit appt, return {appt: appt} */
   static async updateAppt(id, data) {
-        const { setCols, values } = sqlForPartialUpdate(
-        data,
-        {
-          patientFirstName: "patient_first_name",
-          patientLastName: "patient_last_name",
-          date: "appt_date",
-          time: "appt_time",
-          kind:"kind",
-          });
+    const { doctor_First_Name, doctor_Last_Name } = data;
+    let docId;
+    if (data.doctor_First_Name && data.doctor_Last_Name) { 
+      const doctor = await Doctor.showDoctorByName(doctor_First_Name, doctor_Last_Name);
+      console.log('doc id in upate data model', doctor)
+      docId = doctor.id;
+      data.doctor_id = docId;
+      delete data.doctor_First_Name;
+      delete data.doctor_Last_Name;
+    }
+    
+    const { setCols, values } = sqlForPartialUpdate(
+      data,
+      {
+        patientFirstName: "patient_first_name",
+        patientLastName: "patient_last_name",
+        date: "appt_date",
+        time: "appt_time",
+        kind:"kind",
+      });
+    
     const idVarIdx = "$" + (values.length + 1);
     const querySql = `UPDATE
          appointments
