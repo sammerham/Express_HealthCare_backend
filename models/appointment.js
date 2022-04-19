@@ -181,7 +181,6 @@ class Appointment {
     let docId;
     if (data.doctor_First_Name && data.doctor_Last_Name) { 
       const doctor = await Doctor.showDoctorByName(doctor_First_Name, doctor_Last_Name);
-      console.log('doc id in upate data model', doctor)
       docId = doctor.id;
       data.doctor_id = docId;
       delete data.doctor_First_Name;

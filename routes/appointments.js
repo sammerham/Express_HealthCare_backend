@@ -105,7 +105,6 @@ router.delete("/:id", ensureLoggedIn, async function (req, res, next) {
 
 router.patch("/:id",ensureLoggedIn, async function (req, res, next) {
   try {
-    console.log('data coming from client', req.body)
     const foundAppt = await Appointment.getAppointmentById(req.params.id)
     if (!foundAppt) throw new NotFoundError(`No appt: ${req.params.id}`);
     const validator = jsonschema.validate(req.body, apptUpdateSchema);
