@@ -7,6 +7,9 @@ const apptNewSchema = require("../schemas/apptNew.json");
 const apptUpdateSchema = require("../schemas/apptUpdate.json");
 const { ensureLoggedIn } = require('../middleware/auth');
 const { request } = require("../app");
+const capitalize = require('../helper/uppercase');
+
+
 
 
 // routes for appointments
@@ -15,9 +18,10 @@ const { request } = require("../app");
 router.get('/', ensureLoggedIn, async (req, res, next) => {
   try {
     const appointments = await Appointment.showAll();
+    if (!appointments) throw new ExpressError(`No apptointments found`, 404);
     return res.status(200).json({ appointments });
   } catch (e) {
-    return next(new NotFoundError('Not Found'));
+    return next(e);
   }
 });
 
@@ -29,7 +33,7 @@ router.get('/:id', ensureLoggedIn, async (req, res, next) => {
     if (!appointment) throw new ExpressError(`No appt with id : ${id}`, 404);
     return res.status(200).json({ appointment });
   } catch (e) {
-    return next(new NotFoundError(e));
+    return next(e);
   }
 });
 
@@ -66,10 +70,10 @@ router.post("/", ensureLoggedIn, async function (req, res, next) {
     } = req.body;
     // check for dupes appt for patient at same date
     const patientAppts = await Appointment.getApptsByName(patient_first_name, patient_last_name);
-    const dupes = patientAppts.some(
-      appt => appt.appt_date.toISOString().split('T')[0] === date
-    )
-    if (dupes) throw new BadRequestError(`Patient has an appt already on ${date} at ${time}!!`);
+    const dupes = patientAppts.filter(
+      appt => appt.appt_date.toISOString().split('T')[0]
+    ).some(appt => appt.appt_time === time);
+    if (dupes) throw new BadRequestError(`Patient has an appt already on same date and time!`);
     // else add appt
     const appt = await Appointment.addAppt(
       doctor_First_Name,
@@ -114,8 +118,8 @@ router.patch("/:id",ensureLoggedIn, async function (req, res, next) {
     }
     const appt = await Appointment.updateAppt(req.params.id, req.body);
     return res.status(200).json({ appointment:appt });
-  } catch (err) {
-    return next(err)
+  } catch (e) {
+    return next(e)
   }
 });
 
