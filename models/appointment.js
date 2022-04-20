@@ -172,7 +172,7 @@ class Appointment {
       
       return results.rows[0];
     } else {
-      return new BadRequestError(`Doctor ${doctor_Last_Name} has three appts for that time`);
+      throw new BadRequestError(`Doctor ${doctor_Last_Name} has three appts for that time`);
     }
   }
   /** edit appt, return {appt: appt} */

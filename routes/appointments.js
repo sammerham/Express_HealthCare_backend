@@ -82,7 +82,7 @@ router.post("/", ensureLoggedIn, async function (req, res, next) {
     );
     return res.status(201).json({ appointment:appt });
   } catch (e) {
-    return next (new BadRequestError(e));
+    return next (e);
   }
 });
 
