@@ -130,8 +130,10 @@ class Appointment {
       WHERE
       doctor_id=$1
       AND
-      appt_time=$2`,
-      [id,time]
+      appt_time=$2
+      AND
+      appt_date=$3`,
+      [id,time, date]
     );
     const appt_count = doc_appts_same_time.rows.length;
     
