@@ -122,7 +122,7 @@ class Appointment {
     const doctor = await Doctor.showDoctorByName(doctor_First_Name, doctor_Last_Name);
     if(!doctor) throw new NotFoundError(`Dr. ${doctor_First_Name} ${doctor_Last_Name} doesn't exist!`)
     const { id } = doctor;
-    // check if doctor has more than 3 appts for the same time
+    // check if doctor has more than 3 appts for same day and the same time
     const doc_appts_same_time = await db.query(
       `SELECT *
       FROM
