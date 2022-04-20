@@ -142,14 +142,13 @@ router.post("/:id/appts/date", ensureLoggedIn, async function (req, res, next) {
     if (!doctor) throw new ExpressError(`No doctor with id: ${id}`, 404);
     const appts = await Doctor.showDocApptsByIdDate(id, date);
     // if (appts.length === 0) return res.status(200).json({ appts:`No appts booked for Dr. ${doctor.first_name} on ${date}` });
-    if (appts.length === 0) throw new BadRequestError(`No appts booked for Dr. ${doctor.first_name} on ${date}`);
-    if (!appts) throw new NotFoundError();
+    if (appts.length === 0) throw new BadRequestError(`No appts booked for Dr. ${doctor.last_name} on ${date}`);
     return res.status(200).json({
       appts,
       doctor: `Dr.${doctor.last_name}`
      });
   } catch (e) {
-    return next(new NotFoundError(e));
+    return next(e);
   }
 });
 
