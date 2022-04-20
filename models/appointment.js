@@ -124,7 +124,14 @@ class Appointment {
     const { id } = doctor;
     // check if doctor has more than 3 appts for same day and the same time
     const doc_appts_same_time = await db.query(
-      `SELECT *
+      `SELECT 
+      id,
+      patient_first_name,
+      patient_last_name,
+      doctor_id, 
+      appt_date,
+      appt_time,
+      kind 
       FROM
       appointments
       WHERE
