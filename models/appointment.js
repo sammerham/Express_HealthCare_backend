@@ -138,7 +138,7 @@ class Appointment {
     const appt_count = doc_appts_same_time.rows.length;
     
 
-    // Insert into table if if doctor has less than 3 appts for the same time;
+    // Insert into table if doctor has less than 3 appts for the same time;
     // otherwise return error bad request;
 
     if (appt_count < 3) {
