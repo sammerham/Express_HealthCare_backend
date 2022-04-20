@@ -61,9 +61,12 @@ router.post("/name/appts",ensureLoggedIn, async function (req, res, next) {
 
     if(!doctor) throw new NotFoundError(`Dr. ${firstName} ${lastName} doesn't exist`)
     const appts = await Doctor.showDocApptsByName(firstName, lastName);
-    if (!appts) throw new NotFoundError();
-    if (appts.length === 0) return res.status(200).json({ appts:`No appts available for Dr. ${lastName}` });
-    return res.status(200).json({ appts });
+    if (appts.length === 0) throw new BadRequestError(`No appts available for Dr. ${lastName}`);
+    // if (appts.length === 0) return res.status(200).json({ appts:`No appts available for Dr. ${lastName}` });
+    return res.status(200).json({
+      appts,
+      doctor: `Dr.${doctor.last_name}`
+     });
   } catch (e) {
     return next(e);
   }
@@ -79,9 +82,12 @@ router.post("/name/appts/date",ensureLoggedIn,  async function (req, res, next) 
     const doctor = await Doctor.showDoctorByName(firstName, lastName);
     if(!doctor) throw new NotFoundError(`Dr. ${firstName} ${lastName} doesn't exist`)
     const appts = await Doctor.showDocApptsByDate(firstName, lastName, date);
-    if (!appts) throw new NotFoundError();
-    if (appts.length === 0) return res.status(200).json({ appts:`No appts booked for Dr. ${lastName} on ${date}` });
-    return res.status(200).json({ appts });
+    // if (appts.length === 0) return res.status(200).json({ appts:`No appts booked for Dr. ${lastName} on ${date}` });
+    if (appts.length === 0) throw new BadRequestError(`No appts booked for Dr. ${lastName} on ${date}` )
+    return res.status(200).json({
+      appts,
+      doctor: `Dr.${doctor.last_name}`
+     });
   } catch (e) {
     return next(new NotFoundError());
   }
@@ -114,9 +120,12 @@ router.get("/:id/appts", ensureLoggedIn, async function (req, res, next) {
     const doctor = await Doctor.showDoctorById(id);
     if (!doctor) throw new ExpressError(`No doctor with id: ${id}`, 404);
     const appts = await Doctor.showDocApptsById(id); 
-    if (appts.length === 0) return res.status(200).json({ appts:`No appts booked for doctos with id :${id}` });
-    if (!appts) throw new NotFoundError();
-    return res.status(200).json({ appts });
+    // if (appts.length === 0) return res.status(200).json({ appts:`No appts booked for doctos with id :${id}` });
+    if (appts.length === 0) throw new BadRequestError(`No appointments booked for Dr.${doctor.last_name}!`);
+    return res.status(200).json({
+      appts,
+      doctor: `Dr.${doctor.last_name}`
+     });
   } catch (e) {
     return next(e);
   }
@@ -132,9 +141,13 @@ router.post("/:id/appts/date", ensureLoggedIn, async function (req, res, next) {
     const doctor = await Doctor.showDoctorById(id);
     if (!doctor) throw new ExpressError(`No doctor with id: ${id}`, 404);
     const appts = await Doctor.showDocApptsByIdDate(id, date);
-    if (appts.length === 0) return res.status(200).json({ appts:`No appts booked for Dr. ${doctor.first_name} on ${date}` });
+    // if (appts.length === 0) return res.status(200).json({ appts:`No appts booked for Dr. ${doctor.first_name} on ${date}` });
+    if (appts.length === 0) throw new BadRequestError(`No appts booked for Dr. ${doctor.first_name} on ${date}`);
     if (!appts) throw new NotFoundError();
-    return res.status(200).json({ appts });
+    return res.status(200).json({
+      appts,
+      doctor: `Dr.${doctor.last_name}`
+     });
   } catch (e) {
     return next(new NotFoundError(e));
   }

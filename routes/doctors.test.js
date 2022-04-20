@@ -140,7 +140,9 @@ describe("POST /doctors/name/appts", () => {
         doctorfname: 'd1',
         doctorlname: 'test1'
       },
-    ];
+  ];
+  const doctor = 'Dr.test1';
+
   test("works for logged in user", async () => {
     const resp = await request(app)
       .post("/doctors/name/appts")
@@ -149,7 +151,7 @@ describe("POST /doctors/name/appts", () => {
         lastName: 'test1'
       })
       .set("authorization", `Bearer ${u1Token}`);
-    expect(resp.body).toEqual({ appts});
+    expect(resp.body).toEqual({ appts, doctor});
   });
   test("works for Admin ", async () => {
     const resp = await request(app)
@@ -159,7 +161,7 @@ describe("POST /doctors/name/appts", () => {
         lastName: 'test1'
       })
       .set("authorization", `Bearer ${adminToken}`);
-    expect(resp.body).toEqual({ appts});
+    expect(resp.body).toEqual({ appts, doctor});
   });
   
   test("unauth for a none user", async () => {
@@ -196,7 +198,9 @@ describe("GET /doctors/name/appts/date", () => {
         doctorfname: 'd1',
         doctorlname: 'test1'
       },
-    ];
+  ];
+  const doctor = 'Dr.test1';
+  
   test("works for logged in user", async () => {
     const resp = await request(app)
       .post("/doctors/name/appts")
@@ -206,7 +210,7 @@ describe("GET /doctors/name/appts/date", () => {
         date:'2022-01-09'
       })
       .set("authorization", `Bearer ${u1Token}`);
-    expect(resp.body).toEqual({ appts});
+    expect(resp.body).toEqual({ appts, doctor});
   });
   test("works for Admin ", async () => {
     const resp = await request(app)
@@ -217,7 +221,7 @@ describe("GET /doctors/name/appts/date", () => {
         date:'2022-01-09'
       })
       .set("authorization", `Bearer ${adminToken}`);
-    expect(resp.body).toEqual({ appts});
+    expect(resp.body).toEqual({ appts, doctor});
   });
   
   test("unauth for a none user", async () => {
@@ -281,7 +285,7 @@ describe("GET /doctors/:id", () => {
 
 /************************************** GET /doctors/:id/appts */
 describe("GET /doctors/:id/appts", () => { 
-  
+
   
   test("works for logged in user", async () => {
     const appts = [
@@ -295,11 +299,12 @@ describe("GET /doctors/:id/appts", () => {
       kind: 'Follow-up',
       },
   ];
+    const doctor = 'Dr.test1';
     const resp = await request(app)
       .get(`/doctors/${testDocIds[0]}/appts`)
       .set("authorization", `Bearer ${u1Token}`);
 
-    expect(resp.body).toEqual({appts} );
+    expect(resp.body).toEqual({appts, doctor} );
   });
 
  test("works for Admin", async () => {
@@ -313,12 +318,14 @@ describe("GET /doctors/:id/appts", () => {
       appt_time: '10:00:00',
       kind: 'Follow-up',
       },
-  ];
+    ];
+   const doctor = 'Dr.test1';
+
     const resp = await request(app)
       .get(`/doctors/${testDocIds[0]}/appts`)
       .set("authorization", `Bearer ${adminToken}`);
 
-    expect(resp.body).toEqual({appts} );
+    expect(resp.body).toEqual({appts, doctor} );
   });
   
   test("unauth for a none user", async () => {
@@ -352,12 +359,14 @@ describe("POST /doctors/:id/appts/date", () => {
       appt_time: '10:00:00',
       kind: 'Follow-up',
       },
-  ];
+    ];
+    const doctor = 'Dr.test1';
+
     const resp = await request(app)
       .post(`/doctors/${testDocIds[0]}/appts/date`)
       .send({date:'2022-01-09'})
       .set("authorization", `Bearer ${u1Token}`);
-    expect(resp.body).toEqual({appts} );
+    expect(resp.body).toEqual({appts, doctor} );
   });
 
   
@@ -372,13 +381,14 @@ describe("POST /doctors/:id/appts/date", () => {
       appt_time: '10:00:00',
       kind: 'Follow-up',
       },
-  ];
+    ];
+    const doctor = 'Dr.test1';
     const resp = await request(app)
       .post(`/doctors/${testDocIds[0]}/appts/date`)
       .send({date:'2022-01-09'})
       .set("authorization", `Bearer ${adminToken}`);
 
-    expect(resp.body).toEqual({appts} );
+    expect(resp.body).toEqual({appts, doctor} );
   });
   
   test("unauth for a none user", async () => {
