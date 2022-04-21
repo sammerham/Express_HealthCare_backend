@@ -62,7 +62,6 @@ router.post("/name/appts",ensureLoggedIn, async function (req, res, next) {
     if(!doctor) throw new NotFoundError(`Dr. ${firstName} ${lastName} doesn't exist`)
     const appts = await Doctor.showDocApptsByName(firstName, lastName);
     if (appts.length === 0) throw new BadRequestError(`No appts available for Dr. ${lastName}`);
-    // if (appts.length === 0) return res.status(200).json({ appts:`No appts available for Dr. ${lastName}` });
     return res.status(200).json({
       appts,
       doctor: `Dr.${doctor.last_name}`
