@@ -347,8 +347,9 @@ describe("DELETE /appts/:id", () => {
 
   test("not found if appts doesn't exist", async () => {
     const resp = await request(app)
-        .delete(`/appts/${testApptsIds[99]}`)
-        .set("authorization", `Bearer ${u2Token}`);
+        .delete(`/appts/199999`)
+      .set("authorization", `Bearer ${u2Token}`);
+             console.log(resp.statusCode, resp.body)
     expect(resp.statusCode).toEqual(404);
   });
 });
@@ -419,7 +420,7 @@ describe("PATCH /appts/:id", () => {
         .send({
           patient_last_name:99,
         })
-        .set("authorization", `Bearer ${u1Token}`);
+      .set("authorization", `Bearer ${u1Token}`);
     expect(resp.statusCode).toEqual(400);
   });
 });

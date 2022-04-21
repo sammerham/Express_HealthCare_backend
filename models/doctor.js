@@ -148,18 +148,18 @@ class Doctor {
   static async updateDoctor(fName, lName,email, id) {
     const results = await db.query(
       `UPDATE
-         doctors
-         SET
-         first_name = $1,
-         last_name=$2,
-         email = $3
-         WHERE
-         id = $4
-         RETURNING
-         id,
-         first_name,
-         last_name,
-         email`,
+        doctors
+        SET
+        first_name = $1,
+        last_name=$2,
+        email = $3
+        WHERE
+        id = $4
+        RETURNING
+        id,
+        first_name,
+        last_name,
+        email`,
       [fName, lName, email, id]);
     return results.rows[0];
   };

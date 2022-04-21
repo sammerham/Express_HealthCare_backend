@@ -94,14 +94,15 @@ router.post("/", ensureLoggedIn, async function (req, res, next) {
 /** DELETE /[id] - delete appt, return `{message: "appt deleted"}` */
 
 router.delete("/:id", ensureLoggedIn, async function (req, res, next) {
+ 
   try {
-    const { id } = req.params;
-    const appt = await Appointment.getAppointmentById(id);
-    if (!appt) throw new ExpressError(`No appt with id : ${id}`, 404);
-    await Appointment.deleteAppt(id);
+    const foundAppt = await Appointment.getAppointmentById(req.params.id)
+    console.log('found appt', foundAppt)
+    if (!foundAppt) throw new NotFoundError(`No appt with id: ${req.params.id}`);
+    await Appointment.deleteAppt(req.params.id);
     return res.status(200).json({ message: "Appt deleted" });
   } catch (e) {
-    return next(new NotFoundError(e));
+    return next(e);
   }
 });
 

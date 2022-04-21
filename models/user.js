@@ -155,12 +155,12 @@ class User {
   static async getByName(firstName, lastName) {
     const userRes = await db.query(
           `SELECT username,
-                  first_name AS "firstName",
-                  last_name AS "lastName",
-                  email,
-                  is_admin AS "isAdmin"
-           FROM users
-           WHERE first_name = $1
+            first_name AS "firstName",
+            last_name AS "lastName",
+            email,
+            is_admin AS "isAdmin"
+            FROM users
+            WHERE first_name = $1
             AND
             last_name=$2`
         ,[firstName, lastName],
@@ -180,10 +180,10 @@ class User {
   static async findAll() {
     const result = await db.query(
           `SELECT username,
-                first_name AS "firstName",
-                last_name AS "lastName",
-                email,
-                is_admin AS "isAdmin"
+            first_name AS "firstName",
+            last_name AS "lastName",
+            email,
+            is_admin AS "isAdmin"
            FROM users
            ORDER BY username`,
     );
@@ -225,10 +225,10 @@ class User {
                       SET ${setCols} 
                       WHERE username = ${usernameVarIdx} 
                       RETURNING username,
-                                first_name AS "firstName",
-                                last_name AS "lastName",
-                                email,
-                                is_admin AS "isAdmin"`;
+                      first_name AS "firstName",
+                      last_name AS "lastName",
+                      email,
+                      is_admin AS "isAdmin"`;
     const result = await db.query(querySql, [...values, username]);
     const user = result.rows[0];
 

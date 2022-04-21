@@ -89,7 +89,7 @@ router.post("/name/appts/date",ensureLoggedIn,  async function (req, res, next) 
       doctor: `Dr.${doctor.last_name}`
      });
   } catch (e) {
-    return next(new NotFoundError());
+    return next(e);
   }
 });
 /** GET /id - returns `{doctor: {
@@ -189,14 +189,14 @@ router.delete("/:id", ensureLoggedIn, async function (req, res, next) {
     await Doctor.deleteDoctor(id);
     return res.status(200).json({ message: `Doctor deleted!` });
   } catch (e) {
-    return next(new NotFoundError(e));
+    return next(e);
   }
 });
 
 /** PATCH /[id] - update fields in doctor; return `{doctor: doctor}` */
 
 router.patch("/:id", ensureAdmin, async function (req, res, next) {
-  let doctor;
+  // let doctor;
   try {
     const { firstName, lastName, email } = req.body;
     const validator = jsonschema.validate(req.body, doctorUpdateSchema);
