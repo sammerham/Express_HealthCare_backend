@@ -181,9 +181,8 @@ router.post("/",ensureLoggedIn, async function (req, res, next) {
 /** DELETE /[id] - delete doctor, return `{message: "doctor deleted"}` */
 
 router.delete("/:id", ensureLoggedIn, async function (req, res, next) {
-  let id;
   try {
-    id = req.params.id;
+    const id = req.params.id;
     const doctor = await Doctor.showDoctorById(id);
     if (!doctor) throw new NotFoundError(`No matching doctor with ID: ${id}`,404);
     await Doctor.deleteDoctor(id);
@@ -196,7 +195,6 @@ router.delete("/:id", ensureLoggedIn, async function (req, res, next) {
 /** PATCH /[id] - update fields in doctor; return `{doctor: doctor}` */
 
 router.patch("/:id", ensureAdmin, async function (req, res, next) {
-  // let doctor;
   try {
     const { firstName, lastName, email } = req.body;
     const validator = jsonschema.validate(req.body, doctorUpdateSchema);
