@@ -56,6 +56,10 @@ class Appointment {
       "kind": "New Patient"
     }, ...]}
    **/
+
+  
+  
+  
   static async getApptsByName(fName,lName) {
     const results = await db.query(
       `SELECT
@@ -69,10 +73,10 @@ class Appointment {
       FROM
       appointments
       WHERE
-      patient_first_name = $1
+      LOWER(patient_first_name) ILIKE LOWER($1)
       AND
-      patient_last_name = $2`,
-      [fName, lName],
+      LOWER(patient_last_name) ILIKE LOWER($2)`,
+      [`%${fName}%`, `%${lName}%`],
     );
     return results.rows
   }

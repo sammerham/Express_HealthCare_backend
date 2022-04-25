@@ -160,10 +160,10 @@ class User {
             email,
             is_admin AS "isAdmin"
             FROM users
-            WHERE first_name = $1
+            WHERE LOWER(first_name) ILIKE LOWER($1)
             AND
-            last_name=$2`
-        ,[firstName, lastName],
+            LOWER(last_name) ILIKE LOWER($2)`
+        ,[`%${firstName}%`, `%${lastName}%`],
     );
 
     const user = userRes.rows[0];

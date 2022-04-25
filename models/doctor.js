@@ -31,7 +31,7 @@ class Doctor {
       "email": "oliver@sodlcshealth.com"
     }}
  **/
-
+  
   static async showDoctorByName(first_name, last_name) {
     const results = await db.query(
       `SELECT 
@@ -39,11 +39,11 @@ class Doctor {
       FROM
       doctors
       WHERE
-      first_name = $1
+      LOWER(first_name) ILIKE LOWER($1)
       AND
-      last_name=$2
+      LOWER(last_name) ILIKE LOWER($2)
       `,
-      [first_name, last_name]
+      [`%${first_name}%`, `%${last_name}%`]
     );
     return results.rows[0];
   }
