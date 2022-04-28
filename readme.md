@@ -2,6 +2,21 @@
 
 Healthcare Appointment System is a Backend API for making appointments for doctors, built with Node Express JS.
 
+
+# Deployed Version: 
+https://sodlcscare.herokuapp.com/
+
+Adim user credentials (username:admin ) (password:admin)
+regular user credentials (username:user ) (password:user1234)
+
+- You can use this API using Insomnia or Postman
+- make sure to get a token by accessing below like as POST request
+   https://sodlcscare.herokuapp.com/auth/login
+- using above credentials for admin or regular user
+- Once you get a token back , make sure to included as an authorization header in all of your future request
+- authorization: Bearer`TOKEN`
+
+
 ## Installation
 
 Use the node package manager to install install all the dependencies.
