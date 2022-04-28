@@ -50,8 +50,7 @@ appointments can be added with the same time for a given doctor.
 - Most of the routes are fully protected by (enusreAdmin, ensureLoggedIn, ensureCorrectUserOrAdmin)
 #### /auth: 
 - auth/login
-- /auth/register
-* once successfully complete login or registration you get a token to be used in other routes by adding it as a header authorization: Bearer Token.
+* once successfully complete login you get a token to be used in other routes by adding it as a header authorization: Bearer Token.
 - users: Adds, edit, delete user. This is not the registration endpoint --- instead, this is
  only for admin users to Adds, edit, delete user. The new user being added can be an admin.
 #### These routes are protected :
