@@ -18,6 +18,7 @@ const {
   adminToken,
 } = require("./_testCommon");
 const req = require("express/lib/request");
+const res = require("express/lib/response");
 
 beforeAll(commonBeforeAll);
 beforeEach(commonBeforeEach);
