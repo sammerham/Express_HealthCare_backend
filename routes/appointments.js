@@ -8,7 +8,7 @@ const apptUpdateSchema = require("../schemas/apptUpdate.json");
 const { ensureLoggedIn } = require('../middleware/auth');
 const { request } = require("../app");
 const capitalize = require('../helper/uppercase');
-
+const moment = require('moment')
 
 
 
@@ -68,12 +68,12 @@ router.post("/", ensureLoggedIn, async function (req, res, next) {
       time,
       kind
     } = req.body;
-    // check for dupes appt for patient at same date
+
+    // check for dupes appt for patient at same date and time
     const patientAppts = await Appointment.getApptsByName(patient_first_name, patient_last_name);
     const dupes = patientAppts.filter(
-      appt => appt.appt_date.toISOString().split('T')[0]
-    ).some(appt => appt.appt_time === time);
-    if (dupes) throw new BadRequestError(`Patient has an appt already on same date and time!`);
+      appt => moment.utc(appt.appt_date).format('YYYY-MM-DD') === date && appt.appt_time === time);
+     if (dupes.length) throw new BadRequestError(`Patient has an appt already on same date and time!`);
     // else add appt
     const appt = await Appointment.addAppt(
       doctor_First_Name,
@@ -94,10 +94,9 @@ router.post("/", ensureLoggedIn, async function (req, res, next) {
 /** DELETE /[id] - delete appt, return `{message: "appt deleted"}` */
 
 router.delete("/:id", ensureLoggedIn, async function (req, res, next) {
- 
+  
   try {
     const foundAppt = await Appointment.getAppointmentById(req.params.id)
-    console.log('found appt', foundAppt)
     if (!foundAppt) throw new NotFoundError(`No appt with id: ${req.params.id}`);
     await Appointment.deleteAppt(req.params.id);
     return res.status(200).json({ message: "Appt deleted" });
