@@ -12,7 +12,7 @@ const moment = require('moment')
 
 
 
-// routes for appointments
+// Routes for appointments
 
 //Get a list of all appointments
 router.get('/', ensureLoggedIn, async (req, res, next) => {
