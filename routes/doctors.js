@@ -178,7 +178,7 @@ router.post("/",ensureLoggedIn, async function (req, res, next) {
 
 router.delete("/:id", ensureLoggedIn, async function (req, res, next) {
   try {
-    const id = req.params.id;
+    const { id } = req.params;
     const doctor = await Doctor.showDoctorById(id);
     if (!doctor) throw new NotFoundError(`No matching doctor with ID: ${id}`,404);
     await Doctor.deleteDoctor(id);
@@ -198,7 +198,7 @@ router.patch("/:id", ensureAdmin, async function (req, res, next) {
       const errs = validator.errors.map(e => e.stack.replaceAll('"', ''));
       throw new BadRequestError(errs);
     }
-    const id = req.params.id;
+    const { id } = req.params;
     const doctor = await Doctor.showDoctorById(id);
     if (!doctor) throw new NotFoundError(`No matching doctor with ID: ${id}`,404);
     const updatedDoctor = await Doctor.updateDoctor(firstName, lastName, email, id);
