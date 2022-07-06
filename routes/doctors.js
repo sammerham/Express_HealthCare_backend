@@ -76,7 +76,6 @@ router.post("/name/appts",ensureLoggedIn, async function (req, res, next) {
 router.post("/name/appts/date",ensureLoggedIn,  async function (req, res, next) {
   try {
     const { firstName, lastName, date } = req.body;
-    console.log(firstName, lastName, date)
     if (!firstName || !lastName || !date) throw new BadRequestError(`Doctor first name and last are required`);
     const doctor = await Doctor.showDoctorByName(firstName, lastName);
     if(!doctor) throw new NotFoundError(`Dr. ${firstName} ${lastName} doesn't exist`)
@@ -118,8 +117,7 @@ router.get("/:id/appts", ensureLoggedIn, async function (req, res, next) {
     const { id } = req.params;
     const doctor = await Doctor.showDoctorById(id);
     if (!doctor) throw new ExpressError(`No doctor with id: ${id}`, 404);
-    const appts = await Doctor.showDocApptsById(id); 
-    // if (appts.length === 0) return res.status(200).json({ appts:`No appts booked for doctos with id :${id}` });
+    const appts = await Doctor.showDocApptsById(id);
     if (appts.length === 0) throw new BadRequestError(`No appointments booked for Dr.${doctor.last_name}!`);
     return res.status(200).json({
       appts,
@@ -140,7 +138,6 @@ router.post("/:id/appts/date", ensureLoggedIn, async function (req, res, next) {
     const doctor = await Doctor.showDoctorById(id);
     if (!doctor) throw new ExpressError(`No doctor with id: ${id}`, 404);
     const appts = await Doctor.showDocApptsByIdDate(id, date);
-    // if (appts.length === 0) return res.status(200).json({ appts:`No appts booked for Dr. ${doctor.first_name} on ${date}` });
     if (appts.length === 0) throw new BadRequestError(`No appts booked for Dr. ${doctor.last_name} on ${date}`);
     return res.status(200).json({
       appts,
